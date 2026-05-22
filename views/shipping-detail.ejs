@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Detail</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+    body{ background:#f4f6fb; }
+    .container{ display:flex; min-height:100vh; }
+    .sidebar{ width:260px; background:#5b73c8; color:white; transition:0.3s; overflow:hidden; flex-shrink:0; }
+    .sidebar.collapsed{ width:90px; }
+    .sidebar-header{ display:flex; align-items:flex-start; gap:14px; padding:26px 22px; }
+    .logo{ width:42px; flex-shrink:0; margin-top:3px; }
+    .app-title{ font-size:14px; font-weight:700; line-height:1.35; }
+    .sidebar.collapsed .app-title{ display:none; }
+    .sidebar ul{ list-style:none; margin-top:18px; }
+    .sidebar ul li{ margin-bottom:4px; }
+    .menu-link{ display:flex; align-items:center; gap:16px; padding:17px 24px; color:white; text-decoration:none; transition:0.3s; font-size:14px; font-weight:600; }
+    .menu-link:hover{ background:#4059b5; }
+    .sidebar ul li.active .menu-link{ background:#233f99; }
+    .menu-link img{ width:20px; flex-shrink:0; }
+    .sidebar.collapsed .menu-link span{ display:none; }
+    .main{ flex:1; display:flex; flex-direction:column; }
+    .topbar{ height:92px; background:white; display:flex; align-items:center; justify-content:space-between; padding:0 35px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+    .menu-btn{ font-size:42px; cursor:pointer; color:#1e2b50; user-select:none; }
+    .top-right{ display:flex; align-items:center; gap:22px; }
+    .top-right img{ width:24px; cursor:pointer; }
+    .content{ padding:40px; }
+    .card{ background:white; border-radius:28px; padding:40px; box-shadow:0 4px 20px rgba(0,0,0,0.05); margin-bottom:24px; }
+    .title{ font-size:28px; font-weight:700; color:#1d2b53; margin-bottom:30px; }
+    .batch-box{ background:#dfe9ff; border-radius:18px; padding:24px; margin-bottom:35px; display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+    .batch-item p{ font-size:13px; color:#5b6b92; margin-bottom:8px; }
+    .batch-item h4{ font-size:16px; color:#1e2b50; line-height:1.4; }
+    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px 32px; }
+    .form-group{ display:flex; flex-direction:column; }
+    .form-group label{ margin-bottom:10px; font-size:15px; font-weight:600; color:#1e2b50; }
+    .required{ color:red; }
+    .form-group input, .form-group select{ height:58px; border:1px solid #d7ddea; border-radius:12px; padding:0 18px; font-size:16px; background:white; outline:none; transition:0.3s; }
+    .form-group input:focus, .form-group select:focus{ border-color:#5b73c8; box-shadow:0 0 0 4px rgba(91,115,200,0.15); }
+    .readonly{ background:#e8e8e8 !important; color:#666; }
+    .alert-valid{ background:#d4edda; color:#155724; padding:14px 20px; border-radius:10px; margin-top:24px; font-weight:600; }
+    .alert-invalid{ background:#f8d7da; color:#721c24; padding:14px 20px; border-radius:10px; margin-top:24px; font-weight:600; }
+    .button-group{ margin-top:35px; display:flex; justify-content:flex-end; gap:15px; }
+    .btn{ height:52px; padding:0 30px; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; transition:0.3s; }
+    .cancel{ background:#e5e7eb; color:#444; }
+    .cancel:hover{ background:#d6d8dd; }
+    .save{ background:#17338f; color:white; }
+    .save:hover{ background:#10266d; }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li class="active"><a href="/shipping" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/chat.png">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card">
+        <div class="title">Shipping Data Form</div>
+
+        <!-- INFO BATCH dari query string -->
+        <div class="batch-box">
+          <div class="batch-item">
+            <p>Batch ID</p>
+            <h4><%= typeof batchId !== 'undefined' ? batchId : '-' %></h4>
+          </div>
+          <div class="batch-item">
+            <p>Vship_in (L)</p>
+            <h4><%= typeof batch !== 'undefined' && batch.loading ? batch.loading.Vship_in : '-' %></h4>
+          </div>
+          <div class="batch-item">
+            <p>Loading Date & Time</p>
+            <h4><%= typeof batch !== 'undefined' && batch.loading ? batch.loading.loading_datetime : '-' %></h4>
+          </div>
+          <div class="batch-item">
+            <p>Production Pathway</p>
+            <h4><%= typeof batch !== 'undefined' && batch.production ? batch.production.pathway : '-' %></h4>
+          </div>
+        </div>
+
+        <!-- FORM -->
+        <form action="/shipping-detail" method="POST">
+
+          <!-- batch_id dikirim sebagai hidden field -->
+          <input type="hidden" name="batch_id" value="<%= typeof batchId !== 'undefined' ? batchId : '' %>">
+
+          <div class="form-grid">
+
+            <!-- shipment_id -->
+            <div class="form-group">
+              <label>Shipment ID <span class="required">*</span></label>
+              <input type="text" name="shipment_id" placeholder="Contoh: SHIP001" required>
+            </div>
+
+            <!-- transportation_type -->
+            <div class="form-group">
+              <label>Transportation Type <span class="required">*</span></label>
+              <select name="transportation_type" required>
+                <option value="">Select Transportation</option>
+                <option value="Truck">Truck</option>
+                <option value="Ship">Ship</option>
+                <option value="Pipeline">Pipeline</option>
+              </select>
+            </div>
+
+            <!-- shipping_datetime -->
+            <div class="form-group">
+              <label>Shipping Date & Time <span class="required">*</span></label>
+              <input type="datetime-local" name="shipping_datetime" required>
+            </div>
+
+            <!-- Vship_out = volume yang dikirim keluar -->
+            <div class="form-group">
+              <label>Shipped Volume (L) <span class="required">*</span></label>
+              <input type="number" name="Vship_out" id="vship_out" placeholder="0" required>
+              <small style="color:#888; margin-top:6px;">Volume Arriving At The Shipping Destination</small>
+            </div>
+
+            <!-- Kalkulasi otomatis readonly -->
+            <div class="form-group">
+              <label>Volume Loss (L)</label>
+              <input type="text" id="vol_loss_display" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Blended SAF Loss (L)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Neat SAF Loss (L)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Blended SAF Shipped Volume (L)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>Neat SAF Shipped Volume (L)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+            <div class="form-group">
+              <label>SAF Emission (gCO2e)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly>
+            </div>
+
+          </div>
+
+          <!-- STATUS -->
+          <% if (status === "valid") { %>
+            <div class="alert-valid">Data Successfully Saved To Blockchain</div>
+            
+            <div style="margin-top:24px; background:#f0f4ff; border-radius:18px; padding:32px; border-left:4px solid #17338f;">
+              <h3 style="margin-bottom:20px; color:#17338f; font-size:18px;">📋 Submitted Shipping Data</h3>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Batch ID</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= batchId %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Shipment ID</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? batch.shipping.shipment_id : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Transportation Type</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? batch.shipping.transportation_type : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Shipping Date & Time</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? batch.shipping.shipping_datetime : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Shipped Volume / Vship_out (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? batch.shipping.Vship_out : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Volume Loss / Lship (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? Number(batch.shipping.Lship).toFixed(2) : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Blended SAF Loss / pi_ship (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? Number(batch.shipping.pi_ship).toFixed(4) : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Neat SAF Loss / pn_ship (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? Number(batch.shipping.pn_ship).toFixed(4) : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Blended SAF Shipped / Vi_ship_out (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? Number(batch.shipping.Vi_ship_out).toFixed(2) : '-' %></div>
+                </div>
+
+                <div>
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">Neat SAF Shipped / Vn_ship_out (L)</div>
+                  <div style="font-weight:600; color:#1e2b50;"><%= (batch && batch.shipping) ? Number(batch.shipping.Vn_ship_out).toFixed(2) : '-' %></div>
+                </div>
+
+                <div style="grid-column: span 2;">
+                  <div style="font-size:12px; color:#888; margin-bottom:4px;">SAF Emission (gCO2e)</div>
+                  <div style="font-weight:600; color:#155724; font-size:18px;">
+                    <%= (batch && batch.shipping) ? Number(batch.shipping.SAF_emission).toFixed(4) : '-' %>
+                  </div>
+                </div>
+
+              </div>
+
+              <div style="margin-top:24px;">
+                <a href="/shipping" style="padding:12px 24px; border-radius:10px; background:#17338f; color:white; text-decoration:none; font-weight:600;">
+                  ← Back to Shipping List
+                </a>
+              </div>
+            </div>            
+
+          <% } %>
+          <% if (status === "invalid") { %>
+            <div class="alert-invalid">❗ Gagal menyimpan. Cek semua field dan coba lagi.</div>
+          <% } %>
+
+          <!-- BUTTON -->
+          <% if (status !== "valid") { %>
+            <div class="button-group">
+              <button type="button" class="btn cancel" onclick="history.back()">Cancel</button>
+              <button type="submit" class="btn save">
+                <i class="fa-solid fa-floppy-disk"></i> Save
+              </button>
+            </div>
+          <% } else { %>
+            <div class="button-group">
+              <button type="button" class="btn cancel" onclick="history.back()">← Back</button>
+            </div>
+          <% } %>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
+// Data dari backend
+const Vship_in  = <%= typeof batch !== 'undefined' && batch.loading ? batch.loading.Vship_in : 0 %>;
+const Vi_ship_in = <%= typeof batch !== 'undefined' && batch.loading ? batch.loading.Vi_ship_in : 0 %>;
+const Vn_ship_in = <%= typeof batch !== 'undefined' && batch.loading ? batch.loading.Vn_ship_in : 0 %>;
+const HV         = <%= typeof batch !== 'undefined' && batch.production ? batch.production.HV : 0 %>;
+const pathway    = "<%= typeof batch !== 'undefined' && batch.production ? batch.production.pathway : '' %>";
+
+let emissionFactor = 0;
+if (pathway === 'HEFA') emissionFactor = 13.9;
+else if (pathway === 'Co-processing') emissionFactor = 16.7;
+
+function hitungOtomatis() {
+  const Vship_out = parseFloat(document.getElementById('vship_out').value) || 0;
+  if (Vship_in <= 0 || Vship_out <= 0) { reset(); return; }
+
+  const Lship       = Vship_in - Vship_out;
+  const pi_ship     = Vi_ship_in * Lship / Vship_in;
+  const pn_ship     = Vn_ship_in * Lship / Vship_in;
+  const Vi_ship_out = Vi_ship_in - pi_ship;
+  const Vn_ship_out = Vn_ship_in - pn_ship;
+
+  document.getElementById('vol_loss_display').value       = Lship.toFixed(2) + ' L';
+  document.getElementById('blended_loss_display').value   = pi_ship.toFixed(4);
+  document.getElementById('neat_loss_display').value      = pn_ship.toFixed(4);
+  document.getElementById('blended_shipped_display').value = Vi_ship_out.toFixed(2) + ' L';
+  document.getElementById('neat_shipped_display').value   = Vn_ship_out.toFixed(2) + ' L';
+
+  if (emissionFactor > 0 && HV > 0) {
+    const emission = Vn_ship_out * (984.561 / 1294716) * HV * 1000 * emissionFactor;
+    document.getElementById('saf_emission_display').value = emission.toFixed(4);
+    document.getElementById('saf_emission_display').style.color = '#155724';
+  } else {
+    document.getElementById('saf_emission_display').value = 'Shipping Data Is Incomplete';
+  }
+}
+
+function reset() {
+  ['vol_loss_display','blended_loss_display','neat_loss_display',
+   'blended_shipped_display','neat_shipped_display','saf_emission_display']
+  .forEach(id => document.getElementById(id).value = 'Automated Calculation');
+}
+
+document.getElementById('vship_out').addEventListener('input', hitungOtomatis);
+</script>
+</body>
+</html>

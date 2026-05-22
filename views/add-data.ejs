@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Production Data</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">
+        SAF Integrated Data & Traceability System
+      </span>
+    </div>
+
+    <ul>
+      <li onclick="location.href='/dashboard'">
+        <img src="/images/home.png"><span>Dashboard</span>
+      </li>
+
+      <li class="active">
+        <img src="/images/catatan.png"><span>Data Input</span>
+      </li>
+
+      <li>
+        <img src="/images/blockchain.png"><span>Blockchain</span>
+      </li>
+
+      <li>
+        <img src="/images/profile.png"><span>Admin</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="menu-btn">☰</div>
+
+      <div class="top-right">
+        <img src="/images/chat.png">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <h2>Add Production Data</h2>
+      <p>Enter complete batch information for traceability</p>
+
+      <form action="/add-data" method="POST">
+
+        <div class="form-card">
+
+          <!-- ================= SECTION 1 ================= -->
+          <h3>Production Information</h3>
+
+          <div class="form-grid">
+
+            <div>
+              <label>Production Date & Time *</label>
+              <input type="datetime-local" name="productionDate" required>
+            </div>
+
+            <div>
+              <label>Batch ID *</label>
+              <input type="text" name="batchId" required>
+            </div>
+
+            <div>
+              <label>Production Location *</label>
+              <select name="location" required>
+                <option value="">Select Production Location</option>
+                <option>RU II Dumai</option>
+                <option>RU III Sungai Pakning</option>
+                <option>RU IV Plaju</option>
+                <option>RU V Cilacap</option>
+                <option>RU VI Balikpapan</option>
+                <option>RU VII Balongan</option>
+                <option>RU VIII Kasim</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Operator *</label>
+              <input type="text" name="operator" placeholder="Full name" required>
+            </div>
+
+            <div class="full">
+              <label>Production Pathway *</label>
+              <select name="pathway" required>
+                <option value="">Select Production Pathway</option>
+                <option>HEFA</option>
+                <option>Fischer-Tropsch (FT)</option>
+                <option>Alcohol-to-Jet (ATJ)</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- ================= SECTION 2 ================= -->
+          <h3>Volume & Quality Metrics</h3>
+
+          <div class="form-grid-3">
+
+            <div>
+              <label>Input Volume (L) *</label>
+              <input type="number" name="inputVolume" required>
+            </div>
+
+            <div>
+              <label>Total Output Volume (L) *</label>
+              <input type="number" name="outputVolume" required>
+            </div>
+
+            <div>
+              <label>Heating Value (MJ/Kg) *</label>
+              <input type="number" name="heatingValue" required>
+            </div>
+
+            <div>
+              <label>Conventional Avtur (L) *</label>
+              <input type="number" name="avtur" required>
+            </div>
+
+            <div>
+              <label>Neat SAF (L) *</label>
+              <input type="number" name="saf" required>
+            </div>
+
+            <div>
+              <label>SAF Emission (gCO2e/MJ)</label>
+              <input type="text" value="Automated Calculation" readonly>
+            </div>
+
+          </div>
+
+          <!-- ================= SECTION 3 ================= -->
+          <h3>Feedstock Information</h3>
+
+          <div class="form-grid">
+
+            <div>
+              <label>Feedstock Supplier *</label>
+              <input type="text" name="supplier" placeholder="Supplier name" required>
+            </div>
+
+            <div>
+              <label>Feedstock Origin *</label>
+              <input type="text" name="origin" required>
+            </div>
+
+            <div>
+              <label>Type of Feedstock *</label>
+              <select name="type" required>
+                <option value="">Select Type of Feedstock</option>
+                <option>Used Cooking Oil</option>
+                <option>Palm Oil Mill Effluent</option>
+                <option>Jatropha Oil</option>
+                <option>Waste Animal Fats</option>
+                <option>Algae Biomass</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Feedstock Emission (gCO2e/MJ) *</label>
+              <input type="number" name="feedstockEmission" required>
+            </div>
+
+            <div>
+              <label>Feedstock Receiving Date & Time *</label>
+              <input type="datetime-local" name="feedstockDate" required>
+            </div>
+
+            <div>
+              <label>Feedstock Volume (L) *</label>
+              <input type="number" name="feedstockVolume" required>
+            </div>
+
+          </div>
+
+          <!-- ================= BUTTON ================= -->
+          <div class="form-actions">
+            <a href="/dashboard" class="cancel">Cancel</a>
+            <button type="submit" class="save">💾 Save</button>
+          </div>
+
+          <!-- ================= NOTIF ================= -->
+          <% if (status === "valid") { %>
+            <div class="alert success">✔ Data Valid</div>
+          <% } %>
+
+          <% if (status === "invalid") { %>
+            <div class="alert error">❗ Data Invalid</div>
+          <% } %>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Detail</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li class="active"><a href="/terminal" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <div class="content">
+      <h1 class="dashboard-title">Terminal Data Input</h1>
+
+      <!-- STATUS -->
+      <% if (status === "valid") { %>
+        <div style="background:#d4edda; color:#155724; padding:12px; border-radius:8px; margin-bottom:16px;">
+          ✅ Data berhasil disimpan ke blockchain!
+        </div>
+      <% } else if (status === "invalid") { %>
+        <div style="background:#f8d7da; color:#721c24; padding:12px; border-radius:8px; margin-bottom:16px;">
+          ❌ Gagal menyimpan. Cek semua field dan coba lagi.
+        </div>
+      <% } %>
+
+      <form action="/terminal-detail" method="POST">
+        <div class="card">
+          <h3 style="margin-bottom:24px;">Terminal Data Form</h3>
+
+          <!-- batch_id sebagai hidden field -->
+          <input type="hidden" name="batch_id" value="<%= typeof batchId !== 'undefined' ? batchId : '' %>">
+
+          <div class="form-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+            <!-- terminal_location -->
+            <div class="form-group">
+              <label>Terminal Location *</label>
+              <select name="terminal_location" required>
+                <option value="">Select Terminal Location</option>
+                <option value="DPPU Soekarno-Hatta">DPPU Soekarno-Hatta</option>
+                <option value="DPPU Juanda">DPPU Juanda</option>
+                <option value="DPPU Ngurah Rai">DPPU Ngurah Rai</option>
+                <option value="DPPU Kualanamu">DPPU Kualanamu</option>
+                <option value="DPPU Sultan Hasanuddin">DPPU Sultan Hasanuddin</option>
+              </select>
+            </div>
+
+            <!-- tank_id -->
+            <div class="form-group">
+              <label>Tank ID *</label>
+              <input
+                type="text"
+                name="tank_id"
+                placeholder="Contoh: TANK001"
+                required
+              >
+            </div>
+
+            <!-- Vtank_now = volume total di dalam tank sekarang (setelah batch ini masuk) -->
+            <div class="form-group">
+              <label>Tank Volume Now / Vtank_now (L) *</label>
+              <input
+                type="number"
+                name="Vtank_now"
+                placeholder="0"
+                required
+              >
+              <small style="color:#888; margin-top:6px;">
+                Volume total di dalam tank setelah batch ini masuk
+              </small>
+            </div>
+
+            <!-- terminal_datetime -->
+            <div class="form-group">
+              <label>Terminal Date & Time *</label>
+              <input
+                type="datetime-local"
+                name="terminal_datetime"
+                required
+              >
+            </div>
+
+            <!-- Kalkulasi otomatis readonly -->
+            <div class="form-group">
+              <label>Vtank_in — Volume Masuk (L)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly
+                style="background:#e8e8e8; border:1px solid #d7ddea; border-radius:8px; padding:12px; font-size:14px;">
+              <small style="color:#888; margin-top:6px;">= Vtank_now − Vtank_prev (dari database)</small>
+            </div>
+
+            <div class="form-group">
+              <label>SAF Emission (gCO2e/MJ)</label>
+              <input type="text" class="readonly" value="Automated Calculation" readonly
+                style="background:#e8e8e8; border:1px solid #d7ddea; border-radius:8px; padding:12px; font-size:14px;">
+            </div>
+
+          </div>
+
+          <!-- BUTTON -->
+          <% if (status !== "valid") { %>
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:28px;">
+              <a href="/terminal" style="padding:14px 24px; border-radius:10px; background:#e5e7eb; color:#444; text-decoration:none; font-weight:600;">
+                Cancel
+              </a>
+              <button type="submit" style="padding:14px 24px; border-radius:10px; background:#17338f; color:white; border:none; font-weight:600; cursor:pointer;">
+                💾 Save
+              </button>
+            </div>
+          <% } else { %>
+            <div style="display:flex; justify-content:flex-end; margin-top:28px;">
+              <a href="/terminal" style="padding:14px 24px; border-radius:10px; background:#e5e7eb; color:#444; text-decoration:none; font-weight:600;">
+                ← Back
+              </a>
+            </div>
+          <% } %>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("expanded");
+}
+</script>
+</body>
+</html>

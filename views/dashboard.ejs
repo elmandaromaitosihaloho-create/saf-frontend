@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- ================= SIDEBAR ================= -->
+  <div class="sidebar expanded" id="sidebar">
+
+    <!-- HEADER -->
+    <div class="sidebar-header">
+
+      <img
+        src="/images/pertamina-aja.png"
+        class="logo"
+      >
+
+      <span class="app-title">
+        SAF Integrated Data &
+        Traceability System
+      </span>
+
+    </div>
+
+    <!-- ================= MENU ================= -->
+    <ul>
+
+      <!-- DASHBOARD -->
+      <li class="active">
+
+        <a href="/dashboard" class="menu-link">
+
+          <img src="/images/home.png">
+
+          <span>
+            Dashboard
+          </span>
+
+        </a>
+
+      </li>
+
+      <!-- DATA INPUT -->
+      <li>
+
+        <% if (role === "Production") { %>
+
+          <a href="/production" class="menu-link">
+
+        <% } else if (role === "Loading") { %>
+
+          <a href="/loading" class="menu-link">
+
+        <% } else if (role === "Shipping") { %>
+
+          <a href="/shipping" class="menu-link">
+
+        <% } else if (role === "Terminal") { %>
+
+          <a href="/terminal" class="menu-link">
+
+        <% } else { %>
+
+          <a href="/fueling" class="menu-link">
+
+        <% } %>
+
+            <img src="/images/catatan.png">
+
+            <span>
+              Data Input
+            </span>
+
+          </a>
+
+      </li>
+
+      <!-- TRACEABILITY -->
+      <li>
+
+        <a href="/traceability" class="menu-link">
+
+          <img src="/images/blockchain.png">
+
+          <span>
+            Traceability
+          </span>
+
+        </a>
+
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+
+    <!-- ================= TOPBAR ================= -->
+    <div class="topbar">
+
+      <!-- MENU BUTTON -->
+      <div
+        class="menu-btn"
+        onclick="toggleSidebar()"
+      >
+        ☰
+      </div>
+
+      <!-- RIGHT -->
+      <div class="top-right">
+
+        <!-- CHAT -->
+        <img
+          src="/images/chat.png"
+          class="top-icon"
+        >
+
+        <!-- NOTIFICATION -->
+        <div class="notif-wrapper">
+
+          <img
+            src="/images/notif.png"
+            class="top-icon"
+            onclick="toggleNotif()"
+          >
+
+          <!-- DROPDOWN -->
+          <div
+            class="notif-dropdown"
+            id="notifDropdown"
+          >
+
+            <h3>
+              Notification
+            </h3>
+
+            <!-- ITEM -->
+            <div class="notif-item">
+
+              <img src="/images/total-shipping.png">
+
+              <div>
+
+                <p>
+                  BATCH001 Ready for Shipping
+                </p>
+
+                <small>
+                  dd/mm/yyyy
+                </small>
+
+              </div>
+
+            </div>
+
+            <!-- ITEM -->
+            <div class="notif-item">
+
+              <img src="/images/total-shipping.png">
+
+              <div>
+
+                <p>
+                  BATCH001 Ready for Shipping
+                </p>
+
+                <small>
+                  dd/mm/yyyy
+                </small>
+
+              </div>
+
+            </div>
+
+            <!-- ITEM -->
+            <div class="notif-item">
+
+              <img src="/images/total-shipping.png">
+
+              <div>
+
+                <p>
+                  BATCH001 Ready for Shipping
+                </p>
+
+                <small>
+                  dd/mm/yyyy
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PROFILE -->
+        <div class="profile-wrapper">
+
+          <div
+            class="profile-trigger"
+            onclick="toggleProfile()"
+          >
+
+            <img
+              src="/images/admin.png"
+              class="profile-icon"
+            >
+
+            <span class="profile-name">
+              User
+            </span>
+
+          </div>
+
+          <!-- PROFILE DROPDOWN -->
+          <div
+            class="profile-dropdown"
+            id="profileDropdown"
+          >
+
+            <!-- TOP -->
+            <div class="profile-top">
+
+              <img
+                src="/images/profile.png"
+                class="profile-avatar"
+              >
+
+              <h3>
+                Profile User
+              </h3>
+
+              <p>
+                User Team
+              </p>
+
+            </div>
+
+            <!-- MENU -->
+            <a
+              href="/profile"
+              class="profile-menu"
+            >
+
+              👤 View Profile
+
+            </a>
+
+            <a
+              href="/logout"
+              class="profile-menu logout"
+            >
+
+              🚪 Logout
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="content">
+
+      <h1 class="dashboard-title">
+        Dashboard
+      </h1>
+
+      <!-- ================= TOP CARDS ================= -->
+      <div class="dashboard-cards">
+
+        <!-- CARD -->
+        <div class="dashboard-card">
+
+          <div class="card-icon yellow">
+
+            <img src="/images/total-production.png">
+
+          </div>
+
+          <div class="card-info">
+
+            <small>Total Produksi</small>
+
+            <h3>1.200 kL</h3>
+
+          </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="dashboard-card">
+
+          <div class="card-icon blue">
+
+            <img src="/images/total-shipping.png">
+
+          </div>
+
+          <div class="card-info">
+
+            <small>Total Shipping</small>
+
+            <h3>1.200 kL</h3>
+
+          </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="dashboard-card">
+
+          <div class="card-icon red">
+
+            <img src="/images/total-fueling.png">
+
+          </div>
+
+          <div class="card-info">
+
+            <small>Total Fueling</small>
+
+            <h3>1.200 kL</h3>
+
+          </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="dashboard-card">
+
+          <div class="card-icon orange">
+
+            <img src="/images/current-stock.png">
+
+          </div>
+
+          <div class="card-info">
+
+            <small>Current Stock</small>
+
+            <h3>1.200 kL</h3>
+
+          </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="dashboard-card">
+
+          <div class="card-icon green">
+
+            <img src="/images/emission.png">
+
+          </div>
+
+          <div class="card-info">
+
+            <small>Emission (GHG)</small>
+
+            <h3 class="green-text">
+              80%
+            </h3>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= OVERVIEW ================= -->
+      <div class="overview-wrapper">
+
+        <!-- ================= BATCH OVERVIEW ================= -->
+        <div class="overview-box">
+
+          <h3>
+            Batch Overview
+          </h3>
+
+          <div class="overview-cards">
+
+            <% if (role === "Loading") { %>
+
+              <!-- TOTAL NEAT SAF -->
+              <div class="mini-card">
+
+                <p>
+                  Total Neat SAF
+                </p>
+
+                <div class="mini-value green-box">
+                  30 kL
+                </div>
+
+              </div>
+
+              <!-- AVTUR -->
+              <div class="mini-card">
+
+                <p>
+                  Total Avtur Konvensional
+                </p>
+
+                <div class="mini-value blue-box">
+                  9970 kL
+                </div>
+
+              </div>
+
+              <!-- LOSS GAIN -->
+              <div class="mini-card loss-gain-card">
+
+                <p>
+                  Total Loss/Gain
+                </p>
+
+                <div class="loss-item">
+
+                  <span>
+                    Loss
+                  </span>
+
+                  <div class="mini-tag green-tag">
+                    900 kL
+                  </div>
+
+                </div>
+
+                <div class="loss-item">
+
+                  <span>
+                    Gain
+                  </span>
+
+                  <div class="mini-tag red-tag">
+                    900 kL
+                  </div>
+
+                </div>
+
+              </div>
+
+            <% } else { %>
+
+              <!-- DEFAULT -->
+              <div class="mini-card">
+
+                <p>
+                  Total Neat SAF
+                </p>
+
+                <h2 class="green-text">
+                  30 kL
+                </h2>
+
+              </div>
+
+              <div class="mini-card">
+
+                <p>
+                  Avtur Konvensional
+                </p>
+
+                <h2 class="blue-text">
+                  9970 kL
+                </h2>
+
+              </div>
+
+              <div class="mini-card">
+
+                <p>
+                  Total Loss
+                </p>
+
+                <h2 class="yellow-text">
+                  9970 kL
+                </h2>
+
+              </div>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+        <!-- ================= DATA STATUS ================= -->
+        <div class="overview-box">
+
+          <h3>
+            Data Status
+          </h3>
+
+          <div class="overview-cards">
+
+            <!-- VALID -->
+            <div class="mini-card status-card">
+
+              <img src="/images/valid-batch.png">
+
+              <div>
+
+                <small class="green-text">
+                  Valid Batch
+                </small>
+
+                <h2>
+                  28 <span>(93%)</span>
+                </h2>
+
+              </div>
+
+            </div>
+
+            <!-- WARNING -->
+            <div class="mini-card status-card">
+
+              <img src="/images/warning.png">
+
+              <div>
+
+                <small class="red-text">
+                  Warning
+                </small>
+
+                <h2>
+                  28 <span>(93%)</span>
+                </h2>
+
+              </div>
+
+            </div>
+
+            <!-- TRACEABILITY -->
+            <div class="mini-card status-card">
+
+              <img src="/images/ready-blockchain.png">
+
+              <div>
+
+                <small class="blue-text">
+                  Ready for Traceability
+                </small>
+
+                <h2>
+                  25 <span>(93%)</span>
+                </h2>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+<!-- ================= TABLE ================= -->
+<div class="card newest-card">
+
+  <h3 class="table-title">
+    Newest Data
+  </h3>
+
+  <div class="table-wrapper">
+
+    <table class="newest-table">
+
+      <thead>
+
+        <tr>
+
+          <th>Date and Time</th>
+
+          <th>Batch ID</th>
+
+          <th>Stage</th>
+
+          <th>Volume (kL)</th>
+
+          <th>Total Loss/Gain</th>
+
+          <th>Status</th>
+
+          <th>Action</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <!-- ROW 1 -->
+        <tr>
+
+          <td>03/05/2026 10:30</td>
+
+          <td>BATCH004</td>
+
+          <td>Production</td>
+
+          <td>9995kL</td>
+
+          <td>9975kL</td>
+
+          <td>
+            <span class="status ready">
+              Valid
+            </span>
+          </td>
+
+          <td>
+
+            <a href="/dashboard-detail/BATCH004">
+
+              <img
+                src="/images/logo-mata.png"
+                class="action-icon"
+              >
+
+            </a>
+
+          </td>
+
+        </tr>
+
+        <!-- ROW 2 -->
+        <tr>
+
+          <td>03/05/2026 10:30</td>
+
+          <td>BATCH003</td>
+
+          <td>Production</td>
+
+          <td>9995kL</td>
+
+          <td>9975kL</td>
+
+          <td>
+            <span class="status ready">
+              Valid
+            </span>
+          </td>
+
+          <td>
+
+            <a href="/dashboard-detail/BATCH003">
+
+              <img
+                src="/images/logo-mata.png"
+                class="action-icon"
+              >
+
+            </a>
+
+          </td>
+
+        </tr>
+
+        <!-- ROW 3 -->
+        <tr>
+
+          <td>03/05/2026 10:30</td>
+
+          <td>BATCH002</td>
+
+          <td>Shipping</td>
+
+          <td>9995kL</td>
+
+          <td>9998kL</td>
+
+          <td>
+            <span class="status completed">
+              Warning
+            </span>
+          </td>
+
+          <td>
+
+            <a href="/dashboard-detail/BATCH002">
+
+              <img
+                src="/images/logo-mata.png"
+                class="action-icon"
+              >
+
+            </a>
+
+          </td>
+
+        </tr>
+
+        <!-- ROW 4 -->
+        <tr>
+
+          <td>03/05/2026 10:30</td>
+
+          <td>BATCH001</td>
+
+          <td>Aviation Fuel Business</td>
+
+          <td>9995kL</td>
+
+          <td>9975kL</td>
+
+          <td>
+            <span class="status ready">
+              Valid
+            </span>
+          </td>
+
+          <td>
+
+            <a href="/dashboard-detail/BATCH001">
+
+              <img
+                src="/images/logo-mata.png"
+                class="action-icon"
+              >
+
+            </a>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+
+function toggleSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList
+    .toggle("expanded");
+
+}
+
+/* ================= PROFILE ================= */
+
+function toggleProfile() {
+
+  const profile =
+    document.getElementById(
+      "profileDropdown"
+    );
+
+  profile.classList.toggle("show");
+
+}
+
+/* ================= NOTIFICATION ================= */
+
+function toggleNotif() {
+
+  const notif =
+    document.getElementById(
+      "notifDropdown"
+    );
+
+  notif.classList.toggle("show");
+
+}
+
+/* ================= CLOSE WHEN CLICK OUTSIDE ================= */
+
+window.onclick = function(event) {
+
+  if (
+    !event.target.closest(".profile-wrapper")
+  ) {
+
+    const profile =
+      document.getElementById(
+        "profileDropdown"
+      );
+
+    if (profile) {
+      profile.classList.remove("show");
+    }
+
+  }
+
+  if (
+    !event.target.closest(".notif-wrapper")
+  ) {
+
+    const notif =
+      document.getElementById(
+        "notifDropdown"
+      );
+
+    if (notif) {
+      notif.classList.remove("show");
+    }
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>

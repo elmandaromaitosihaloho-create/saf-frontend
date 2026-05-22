@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traceability Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li><a href="/production" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li class="active"><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/notif.png" class="top-icon">
+        <a href="/profile"><img src="/images/admin.png" class="top-icon"></a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- SEARCH -->
+      <div class="card filter-card">
+        <h2 class="section-title">⌕ Search Blockchain Record</h2>
+        <form action="/traceability" method="GET">
+          <div class="filter-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px;">
+            <div class="filter-group">
+              <label>Blockchain TX ID</label>
+              <input
+                type="text"
+                name="tx_id"
+                placeholder="Masukkan Blockchain TX ID"
+                value="<%= typeof txId !== 'undefined' ? txId : '' %>"
+                style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:14px;"
+              >
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+              <button type="submit" style="padding:12px 24px; background:#17338f; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;">
+                🔍 Search
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- TABLE -->
+      <div class="card">
+        <h2 class="table-title">Blockchain Record</h2>
+
+        <div class="table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Blockchain TX ID</th>
+                <th>Batch ID (Sumber)</th>
+                <th>Recipient</th>
+                <th>SAF Volume (L)</th>
+                <th>Tank ID</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <% if (fuelings && fuelings.length > 0) { %>
+                <% fuelings.forEach(function(f) { %>
+                  <tr>
+                    <td><%= f.datetime ? new Date(f.datetime).toLocaleString('id-ID') : '-' %></td>
+                    <td style="font-family:monospace; font-size:12px;">
+                      <%= f.blockchain_tx_id ? f.blockchain_tx_id.substring(0,16) + '...' : '-' %>
+                    </td>
+                    <td>
+                      <% if (f.batch_sources && f.batch_sources.length > 0) { %>
+                        <%= f.batch_sources.map(function(b){ return b.batch_id; }).join(', ') %>
+                      <% } else { %>
+                        -
+                      <% } %>
+                    </td>
+                    <td><%= f.recipient ? f.recipient.name : '-' %></td>
+                    <td><%= f.Vfuel ? f.Vfuel.toLocaleString() : '-' %></td>
+                    <td><%= f.tank_id || '-' %></td>
+                    <td>
+                      <% if (f.blockchain_tx_id) { %>
+                        <a href="/traceability-detail/<%= f.blockchain_tx_id %>" class="eye-btn">👁</a>
+                      <% } else { %>
+                        -
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:30px; color:#888;">
+                    Belum ada data blockchain
+                  </td>
+                </tr>
+              <% } %>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("expanded");
+}
+</script>
+</body>
+</html>

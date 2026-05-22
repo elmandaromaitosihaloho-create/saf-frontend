@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile User</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li><a href="/production" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="menu-btn">☰</div>
+      <div class="top-right">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- PROFILE CARD -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:30px; flex-wrap:wrap;">
+          <div style="display:flex; gap:24px; align-items:center;">
+            <img src="/images/profile-user.png" style="width:100px;">
+            <div>
+              <h1 style="font-size:26px; margin-bottom:8px;">
+                <%= typeof user !== 'undefined' ? user : 'User' %>
+              </h1>
+              <p><%= typeof role !== 'undefined' ? role : '-' %> Team</p>
+              <br>
+              <p>📍 Pertamina Patra Niaga</p>
+            </div>
+          </div>
+          <div>
+            <p style="color:#777;">Username</p>
+            <h2 style="font-size:18px; font-family:monospace;">
+              <%= typeof user !== 'undefined' ? user : '-' %>
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; margin-top:28px;">
+
+        <!-- USER INFO -->
+        <div class="card">
+          <h2 style="margin-bottom:20px;">User Information</h2>
+          <p><b>Username</b> : <%= typeof user !== 'undefined' ? user : '-' %></p><br>
+          <p><b>Role</b> : <%= typeof role !== 'undefined' ? role : '-' %></p><br>
+          <p><b>Organization</b> : Pertamina Patra Niaga</p><br>
+          <p><b>MSP</b> : Org1MSP</p>
+        </div>
+
+        <!-- ACCESS TABLE -->
+        <div class="card">
+          <h2 style="margin-bottom:20px;">System Role & Access</h2>
+          <table>
+            <tbody>
+              <tr>
+                <td>Production</td>
+                <td><%= role === 'Production' ? '✔ Access Granted' : '❌ No Access' %></td>
+              </tr>
+              <tr>
+                <td>Loading</td>
+                <td><%= role === 'Loading' ? '✔ Access Granted' : '❌ No Access' %></td>
+              </tr>
+              <tr>
+                <td>Shipping</td>
+                <td><%= role === 'Shipping' ? '✔ Access Granted' : '❌ No Access' %></td>
+              </tr>
+              <tr>
+                <td>Terminal</td>
+                <td><%= role === 'Terminal' ? '✔ Access Granted' : '❌ No Access' %></td>
+              </tr>
+              <tr>
+                <td>Aviation Fuel Business</td>
+                <td><%= role === 'Aviation Fuel Business' ? '✔ Access Granted' : '❌ No Access' %></td>
+              </tr>
+              <tr>
+                <td>Traceability</td>
+                <td>✔ Access Granted</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+

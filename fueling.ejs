@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation Fuel Business Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li class="active"><a href="/fueling" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/chat.png">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <div class="content">
+
+      <h1 class="dashboard-title">Aviation Fuel Business Data Input</h1>
+      <p class="dashboard-subtitle">Only batches with terminal data completed can proceed</p>
+
+      <div class="card">
+
+        <div class="section-header">
+          <h3>Select Terminal Batch</h3>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Batch ID</th>
+              <th>Terminal Date & Time</th>
+              <th>Tank ID</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <% if (batches && batches.length > 0) { %>
+
+              <% batches.forEach(function(batch, index) { %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td><%= batch.batch_id %></td>
+                  <td><%= batch.terminal ? batch.terminal.terminal_datetime : '-' %></td>
+                  <td><%= batch.terminal ? batch.terminal.tank_id : '-' %></td>
+                  <td>
+                    <% if (batch.terminal && batch.terminal.Vn_term_now > 0) { %>
+                      <span class="status ready">Ready for Aviation Fuel Business</span>
+                    <% } else if (batch.terminal && batch.terminal.Vn_term_now <= 0) { %>
+                      <span class="status completed">Stock Habis</span>
+                    <% } else { %>
+                      <span class="status progress">Terminal Belum Selesai</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (batch.terminal && batch.terminal.Vn_term_now > 0) { %>
+                      <a href="/fueling-detail?batch_id=<%= batch.batch_id %>&tank_id=<%= batch.terminal.tank_id %>" class="btn-action active">
+                        Continue →
+                      </a>
+                    <% } else { %>
+                      <button class="btn-action disabled" disabled>Continue 🔒</button>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+
+            <% } else { %>
+              <tr>
+                <td colspan="6" style="text-align:center; padding:30px; color:#888;">
+                  Belum ada batch tersedia
+                </td>
+              </tr>
+            <% } %>
+
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("expanded");
+}
+</script>
+
+</body>
+</html>

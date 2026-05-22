@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+  <div class="main-container">
+
+    <!-- ================= LEFT ================= -->
+    <div class="left">
+
+      <!-- TOP BAR -->
+      <div class="top-bar">
+        <img
+          src="/images/logo-pertamina.png"
+          class="logo"
+          alt="Pertamina Logo"
+        >
+      </div>
+
+      <!-- TEXT CONTENT -->
+      <div class="left-content">
+
+        <h1>
+          SAF Integrated Data & <br>
+          Traceability System
+        </h1>
+
+        <p>
+          Enabling transparent, traceable, and sustainable SAF supply chain
+          through data integration and blockchain
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT ================= -->
+    <div class="right">
+
+      <div class="login-box">
+
+        <h2>Login & Authentication</h2>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div style="background:#f8d7da; color:#721c24; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:14px;">
+            ❌ <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+
+          <!-- USERNAME -->
+          <div class="input-group">
+
+            <img
+              src="/images/username.png"
+              class="icon"
+              alt="username"
+            >
+
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+            >
+
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="input-group">
+
+            <img
+              src="/images/password.png"
+              class="icon"
+              alt="password"
+            >
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            >
+
+          </div>
+
+          <!-- ROLE -->
+          <div class="input-group">
+
+            <img
+              src="/images/select-role.png"
+              class="icon"
+              alt="role"
+            >
+
+            <select name="role" required>
+
+              <option value="">
+                Select Role
+              </option>
+
+              <option value="Production">
+                Production
+              </option>
+
+              <option value="Loading">
+                Loading
+              </option>
+
+              <option value="Shipping">
+                Shipping
+              </option>
+
+              <option value="Terminal">
+                Terminal
+              </option>
+
+              <!-- 🔥 SALES SUDAH DIGANTI MENJADI FUELING -->
+              <option value="Aviation Fuel Business">
+                Aviation Fuel Business
+              </option>
+
+            </select>
+
+          </div>
+
+          <!-- BUTTON -->
+          <button type="submit">
+            Login
+          </button>
+
+        </form>
+
+        <!-- EXTRA -->
+        <p class="extra">
+          Forgot password?<br>
+
+          Don't have an account?
+          <span>Register</span>
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

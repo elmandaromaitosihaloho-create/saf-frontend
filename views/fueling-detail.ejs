@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation Fuel Business Detail</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/form.css">
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li class="active"><a href="/fueling" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/chat.png">
+        <img src="/images/notif.png">
+        <img src="/images/admin.png">
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <h1 class="dashboard-title">Selected Batch</h1>
+
+      <form action="/fueling-detail" method="POST">
+        <div class="form-card">
+          <h3>Aviation Fuel Business Data Form</h3>
+
+          <div class="form-grid">
+
+            <!-- tank_id -->
+            <div>
+              <label>Tank ID *</label>
+              <input
+                type="text"
+                name="tank_id"
+                placeholder="Contoh: TANK001"
+                required
+              >
+            </div>
+
+            <!-- recipient.name -->
+            <div>
+              <label>Recipient Name *</label>
+              <select name="recipient_name" required>
+                <option value="">Select Recipient</option>
+                <option value="Pertamina">Pertamina</option>
+                <option value="Garuda Indonesia">Garuda Indonesia</option>
+                <option value="Citilink">Citilink</option>
+              </select>
+            </div>
+
+            <!-- volume = total fuel volume yang dikeluarkan -->
+            <div>
+              <label>Fuel Volume / volume (L) *</label>
+              <input
+                type="number"
+                name="volume"
+                placeholder="0"
+                required
+              >
+            </div>
+
+            <!-- recipient.address -->
+            <div>
+              <label>Recipient Address *</label>
+              <input
+                type="text"
+                name="recipient_address"
+                placeholder="Alamat lengkap"
+                required
+              >
+            </div>
+
+            <!-- n = persentase konsentrasi neat SAF (%) -->
+            <div>
+              <label>SAF Concentration / n (%) *</label>
+              <input
+                type="number"
+                name="n"
+                placeholder="Contoh: 30 (artinya 30% neat SAF)"
+                min="0"
+                max="100"
+                required
+              >
+              <small>Persentase neat SAF dalam campuran</small>
+            </div>
+
+            <!-- fueling_datetime -->
+            <div>
+              <label>Aviation Fuel Business Date & Time *</label>
+              <input
+                type="datetime-local"
+                name="fueling_datetime"
+                required
+              >
+            </div>
+
+            <!-- recipient.contract_number -->
+            <div>
+              <label>Contract Number *</label>
+              <input
+                type="text"
+                name="recipient_contract_number"
+                placeholder="Nomor kontrak"
+                required
+              >
+            </div>
+
+            <!-- readonly kalkulasi otomatis -->
+            <div>
+              <label>Vn Fuel — Neat SAF Volume (L)</label>
+              <input type="text" id="vn_fuel_display" value="Automated Calculation" readonly>
+              <small>= (n × volume) / 100</small>
+            </div>
+
+            <div class="full">
+              <label>SAF Emission (gCO2e/MJ)</label>
+              <input type="text" value="Automated Calculation" readonly>
+            </div>
+
+          </div>
+
+          <!-- STATUS -->
+          <% if (status === "valid") { %>
+            <div class="alert-valid">✔ Data berhasil disimpan ke blockchain!</div>
+          <% } %>
+          <% if (status === "invalid") { %>
+            <div class="alert-invalid">❗ Gagal menyimpan. Cek semua field dan coba lagi.</div>
+          <% } %>
+
+          <!-- BUTTON -->
+          <% if (status !== "valid") { %>
+            <div class="form-actions">
+              <a href="/fueling" class="cancel">Cancel</a>
+              <button type="submit" class="save">💾 Save</button>
+            </div>
+          <% } else { %>
+            <div class="form-actions">
+              <a href="/fueling" class="cancel">← Back</a>
+            </div>
+          <% } %>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("expanded");
+}
+
+// Hitung Vn_fuel otomatis: (n × volume) / 100
+const nInput      = document.querySelector('[name="n"]');
+const volInput    = document.querySelector('[name="volume"]');
+const vnDisplay   = document.getElementById('vn_fuel_display');
+
+function hitungVn() {
+  const n      = parseFloat(nInput.value) || 0;
+  const volume = parseFloat(volInput.value) || 0;
+  if (n > 0 && volume > 0) {
+    vnDisplay.value = ((n * volume) / 100).toFixed(2) + ' L';
+  } else {
+    vnDisplay.value = 'Automated Calculation';
+  }
+}
+
+nInput.addEventListener('input', hitungVn);
+volInput.addEventListener('input', hitungVn);
+</script>
+
+</body>
+</html>

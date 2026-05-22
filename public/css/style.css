@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+.main-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* LEFT */
+.left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(
+              rgba(63,95,191,0.6),
+              rgba(63,95,191,0.6)
+            ),
+            url("/images/kilang-pertamina.webp");
+
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+/* TOP BAR */
+.top-bar {
+  height: 100px;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding-left: 40px;
+}
+
+/* LOGO */
+.logo {
+  width: 170px;
+}
+
+/* TEXT */
+.left-content {
+  padding: 60px;
+}
+
+.left-content h1 {
+  font-size: 34px;
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+
+.left-content p {
+  font-size: 14px;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* RIGHT */
+.right {
+  width: 50%;
+  height: 100vh;
+  background: #cfd8e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LOGIN BOX */
+.login-box {
+  background: #eeeeee;
+  padding: 40px;
+  border-radius: 20px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* INPUT GROUP */
+.input-group {
+  position: relative;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+/* ICON */
+.icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  opacity: 0.7;
+}
+
+/* 🔥 FIX UTAMA DI SINI */
+.input-group input,
+.input-group select {
+  width: 100%;
+  height: 45px;                 /* samakan tinggi */
+  padding: 0 12px 0 40px;       /* konsisten */
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+
+  box-sizing: border-box;       /* 🔥 WAJIB biar width sama */
+  appearance: none;             /* 🔥 hilangkan style beda di select */
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  height: 45px;
+  border-radius: 10px;
+  border: none;
+  background: #3f5fbf;
+  color: white;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2f4ea0;
+}
+
+/* EXTRA TEXT */
+.extra {
+  margin-top: 15px;
+  font-size: 13px;
+}

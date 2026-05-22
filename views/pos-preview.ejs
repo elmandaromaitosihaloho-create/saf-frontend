@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>PoS Preview</title>
+
+  <link
+    rel="stylesheet"
+    href="/css/dashboard.css"
+  >
+
+  <style>
+
+    .pos-layout{
+      display:flex;
+      gap:30px;
+      align-items:flex-start;
+      margin-top:30px;
+      flex-wrap:wrap;
+    }
+
+    .pos-preview{
+      flex:2;
+      background:white;
+      border-radius:20px;
+      padding:24px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .pos-preview img{
+      width:100%;
+      border-radius:14px;
+      border:1px solid #dbe4ff;
+    }
+
+    .download-card{
+      flex:1;
+      background:white;
+      border-radius:20px;
+      padding:24px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.08);
+
+      position:sticky;
+      top:100px;
+    }
+
+    .download-btn{
+      width:100%;
+      margin-top:20px;
+
+      background:#e8efff;
+      color:#1d4ed8;
+
+      border:none;
+      border-radius:12px;
+
+      padding:16px;
+
+      font-size:16px;
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:0.3s;
+    }
+
+    .download-btn:hover{
+      background:#d7e5ff;
+    }
+
+    .page-title{
+      background:white;
+      padding:24px 30px;
+      border-radius:18px;
+      margin-bottom:24px;
+
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded">
+
+    <div class="sidebar-header">
+
+      <img
+        src="/images/pertamina-aja.png"
+        class="logo"
+      >
+
+      <span class="app-title">
+        SAF Integrated Data &
+        Traceability System
+      </span>
+
+    </div>
+
+    <ul>
+
+      <li>
+        <a href="/dashboard" class="menu-link">
+
+          <img src="/images/home.png">
+
+          <span>Dashboard</span>
+
+        </a>
+      </li>
+
+      <li>
+        <a href="/production" class="menu-link">
+
+          <img src="/images/catatan.png">
+
+          <span>Data Input</span>
+
+        </a>
+      </li>
+
+      <li class="active">
+        <a href="/traceability" class="menu-link">
+
+          <img src="/images/blockchain.png">
+
+          <span>Traceability</span>
+
+        </a>
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+      <div class="menu-btn">
+        ☰
+      </div>
+
+      <div class="top-right">
+
+        <img src="/images/notif.png">
+
+        <img src="/images/admin.png">
+
+      </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <div class="page-title">
+
+        <h1>
+          ← Proof of Sustainability Document
+          <span style="font-size:18px;color:#777;">
+            (Preview)
+          </span>
+        </h1>
+
+      </div>
+
+      <div class="pos-layout">
+
+        <!-- LEFT -->
+        <div class="pos-preview">
+
+          <img src="/images/pos-preview.png">
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="download-card">
+
+          <h2>
+            Download PoS Document
+          </h2>
+
+          <br>
+
+          <p style="color:#666;">
+            Date Created
+          </p>
+
+          <h2>
+            16 Oct 2025
+          </h2>
+
+          <p style="margin-top:10px;color:#666;">
+            By PT Pertamina Patra Niaga
+          </p>
+
+          <button class="download-btn">
+
+            ↓ Proof of Sustainability (PoS)
+            for CORSIA Eligible Fuels
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

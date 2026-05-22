@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Dashboard Detail</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#f4f6fb;
+    }
+
+    /* ================= LAYOUT ================= */
+
+    .container{
+      display:flex;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar{
+      width:260px;
+      background:#5b6fb8;
+      height:100vh;
+      position:fixed;
+      left:0;
+      top:0;
+      transition:0.3s;
+      z-index:9999;
+      overflow:hidden;
+    }
+
+    .sidebar.collapsed{
+      width:90px;
+    }
+
+    .sidebar-header{
+      height:90px;
+      display:flex;
+      align-items:center;
+      padding:0 24px;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header img{
+      width:42px;
+    }
+
+    .sidebar ul{
+      list-style:none;
+      margin-top:20px;
+    }
+
+    .sidebar ul li{
+      margin-bottom:8px;
+    }
+
+    .sidebar ul li a{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:18px 28px;
+      text-decoration:none;
+      color:white;
+      font-weight:600;
+      transition:0.2s;
+    }
+
+    .sidebar ul li.active{
+      background:#233f99;
+    }
+
+    .sidebar ul li img{
+      width:20px;
+    }
+
+    .sidebar.collapsed span{
+      display:none;
+    }
+
+    .sidebar.collapsed ul li a{
+      justify-content:center;
+    }
+
+    /* ================= MAIN ================= */
+
+    .main{
+      margin-left:260px;
+      width:calc(100% - 260px);
+      transition:0.3s;
+    }
+
+    .main.expanded{
+      margin-left:90px;
+      width:calc(100% - 90px);
+    }
+
+    /* ================= TOPBAR ================= */
+
+    .topbar{
+      height:90px;
+      background:white;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 34px;
+      border-bottom:1px solid #ddd;
+      position:sticky;
+      top:0;
+      z-index:999;
+    }
+
+    .menu-btn{
+      font-size:40px;
+      cursor:pointer;
+      color:#1f2937;
+    }
+
+    .top-right{
+      display:flex;
+      align-items:center;
+      gap:22px;
+    }
+
+    .top-right img{
+      width:24px;
+    }
+
+    /* ================= CONTENT ================= */
+
+    .content{
+      padding:34px;
+    }
+
+    .card{
+      background:white;
+      border-radius:24px;
+      padding:30px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.04);
+      margin-bottom:28px;
+    }
+
+    .top-section{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:28px;
+    }
+
+    .batch-box{
+      border:1px solid #ddd;
+      border-radius:14px;
+      padding:16px 20px;
+      min-width:220px;
+    }
+
+    .batch-id{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .download-btn{
+      background:#4b67c8;
+      border:none;
+      color:white;
+      padding:14px 24px;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:15px;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper{
+      overflow-x:auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    thead{
+      background:#dbe7ff;
+    }
+
+    th{
+      padding:18px;
+      font-size:15px;
+      color:#1f2937;
+    }
+
+    td{
+      padding:20px 16px;
+      text-align:center;
+      border-bottom:1px solid #eee;
+      color:#4b5563;
+    }
+
+    thead th:first-child{
+      border-top-left-radius:14px;
+    }
+
+    thead th:last-child{
+      border-top-right-radius:14px;
+    }
+
+    .total-row{
+      background:#e4f4db;
+      font-weight:700;
+      color:#3c9d2f;
+    }
+
+    /* ================= BOTTOM GRID ================= */
+
+    .bottom-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+    }
+
+    .card-title{
+      font-size:24px;
+      font-weight:700;
+      margin-bottom:22px;
+      color:#1f2937;
+    }
+
+    .info-box{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+    }
+
+    .info-item{
+      background:#f8fafc;
+      padding:20px;
+      border-radius:16px;
+    }
+
+    .info-item p{
+      font-size:14px;
+      color:#777;
+      margin-bottom:10px;
+    }
+
+    .info-item h3{
+      font-size:36px;
+      color:#42a532;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:1100px){
+
+      .bottom-grid{
+        grid-template-columns:1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div
+    class="sidebar"
+    id="sidebar"
+  >
+
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png">
+    </div>
+
+    <ul>
+
+      <li class="active">
+
+        <a href="/dashboard">
+
+          <img src="/images/home.png">
+
+          <span>Dashboard</span>
+
+        </a>
+
+      </li>
+
+      <li>
+
+        <a href="/production">
+
+          <img src="/images/catatan.png">
+
+          <span>Data Input</span>
+
+        </a>
+
+      </li>
+
+      <li>
+
+        <a href="/traceability">
+
+          <img src="/images/blockchain.png">
+
+          <span>Traceability</span>
+
+        </a>
+
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- MAIN -->
+  <div
+    class="main"
+    id="main"
+  >
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+      <div
+        class="menu-btn"
+        onclick="toggleSidebar()"
+      >
+        ☰
+      </div>
+
+      <div class="top-right">
+
+        <img src="/images/notif.png">
+
+        <img src="/images/admin.png">
+
+      </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- TABLE CARD -->
+      <div class="card">
+
+        <div class="top-section">
+
+          <div class="batch-box">
+
+            <div class="batch-id">
+              BATCH001
+            </div>
+
+            <div style="color:#777;">
+              03/05/2026 10:30
+            </div>
+
+          </div>
+
+          <button class="download-btn">
+
+            <i class="fa-solid fa-download"></i>
+
+            Download
+
+          </button>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Tanggal</th>
+
+                <th>Tahapan</th>
+
+                <th>Volume (kL)</th>
+
+                <th>Total Loss (kL)</th>
+
+                <th>Total Loss (%)</th>
+
+                <th>Emission tCO₂e/MJ</th>
+
+                <th>Intensity gCO₂e/MJ</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>03/05/2026 10:30</td>
+                <td>Production</td>
+                <td>10000</td>
+                <td>25</td>
+                <td>0.25%</td>
+                <td>13.9</td>
+                <td>84.4</td>
+              </tr>
+
+              <tr>
+                <td>03/05/2026 10:30</td>
+                <td>Loading</td>
+                <td>9995</td>
+                <td>5</td>
+                <td>0.05%</td>
+                <td>13.7</td>
+                <td>84.2</td>
+              </tr>
+
+              <tr>
+                <td>03/05/2026 10:30</td>
+                <td>Shipping</td>
+                <td>9990</td>
+                <td>2</td>
+                <td>0.02%</td>
+                <td>13.5</td>
+                <td>84.0</td>
+              </tr>
+
+              <tr>
+                <td>03/05/2026 10:30</td>
+                <td>Terminal</td>
+                <td>9988</td>
+                <td>1</td>
+                <td>0.01%</td>
+                <td>13.3</td>
+                <td>83.9</td>
+              </tr>
+
+              <tr>
+                <td>03/05/2026 10:30</td>
+                <td>Fueling</td>
+                <td>9987</td>
+                <td>1</td>
+                <td>0.01%</td>
+                <td>13.1</td>
+                <td>83.7</td>
+              </tr>
+
+              <tr class="total-row">
+
+                <td colspan="2">
+                  Total
+                </td>
+
+                <td>49960</td>
+
+                <td>34</td>
+
+                <td>0.34%</td>
+
+                <td>67.5</td>
+
+                <td>84.4</td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="bottom-grid">
+
+        <!-- CHART -->
+        <div class="card">
+
+          <div class="card-title">
+            Visualization
+          </div>
+
+          <canvas id="chart"></canvas>
+
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+
+          <div class="card-title">
+            Life Cycle Emissions Information
+          </div>
+
+          <div class="info-box">
+
+            <div class="info-item">
+              <p>Default core life cycle emissions</p>
+              <h3>13.9</h3>
+            </div>
+
+            <div class="info-item">
+              <p>Total life cycle emissions</p>
+              <h3>13.9</h3>
+            </div>
+
+            <div class="info-item">
+              <p>Default induced land use change</p>
+              <h3>0.0</h3>
+            </div>
+
+            <div class="info-item">
+              <p>Emission reduction</p>
+              <h3>84.4%</h3>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+function toggleSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("collapsed");
+
+  document
+    .getElementById("main")
+    .classList.toggle("expanded");
+
+}
+
+const ctx =
+  document.getElementById('chart');
+
+new Chart(ctx, {
+
+  type:'line',
+
+  data:{
+
+    labels:[
+      'Production',
+      'Loading',
+      'Shipping',
+      'Terminal',
+      'Fueling'
+    ],
+
+    datasets:[{
+
+      label:'Emission',
+
+      data:[20,24,28,32,34],
+
+      borderWidth:3,
+
+      tension:0.4
+
+    }]
+
+  },
+
+  options:{
+    responsive:true
+  }
+
+});
+
+</script>
+
+</body>
+</html>

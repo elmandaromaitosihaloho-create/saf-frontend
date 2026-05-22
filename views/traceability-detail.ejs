@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Detail</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    .detail-header{ padding:24px 28px; margin-bottom:20px; }
+    .back-section{ display:flex; align-items:center; gap:18px; }
+    .back-btn{ font-size:34px; text-decoration:none; color:#333; font-weight:300; }
+    .breadcrumb{ font-size:13px; color:#777; margin-bottom:6px; }
+    .immutable-box{ background:#dfe7ff; border:1px solid #b7c8ff; color:#3556b3; padding:16px 22px; border-radius:12px; margin-bottom:24px; font-size:14px; }
+    .detail-card{ padding:28px; margin-bottom:24px; }
+    .section-title{ font-size:24px; margin-bottom:24px; font-weight:700; }
+    .green{ color:#2e9d3f; }
+    .detail-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+    .detail-item p{ font-size:13px; color:#666; margin-bottom:8px; }
+    .detail-item h4{ font-size:18px; color:#111; margin-bottom:4px; font-weight:600; }
+    .detail-item small{ color:#777; font-size:12px; }
+    .emission-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; text-align:center; }
+    .emission-item{ padding:20px; }
+    .emission-item p{ color:#63a650; font-size:14px; margin-bottom:12px; }
+    .emission-item h2{ font-size:48px; margin-bottom:8px; color:#0c1730; }
+    .emission-item small{ color:#666; font-size:13px; }
+    .pos-card{ background:#dfe2ff; border:1px solid #bcc6ff; padding:28px; margin-bottom:30px; }
+    .pos-header{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; gap:20px; }
+    .pos-header h2{ font-size:24px; color:#4a58cc; margin-bottom:12px; }
+    .pos-desc{ color:#5a67c7; line-height:1.7; font-size:14px; max-width:700px; }
+    .access-valid{ background:#d7f5d7; color:#2a9b39; padding:12px 20px; border-radius:12px; font-weight:700; border:1px solid #8de09b; white-space:nowrap; }
+    .access-invalid{ background:#ffe1e1; color:#e03131; padding:12px 20px; border-radius:12px; font-weight:700; border:1px solid #ffb0b0; white-space:nowrap; }
+    .generate-btn{ background:white; border:none; padding:14px 28px; border-radius:12px; font-size:18px; font-weight:700; color:#4a58cc; cursor:pointer; transition:0.3s; box-shadow:0 4px 14px rgba(0,0,0,0.08); }
+    .generate-btn:hover{ transform:translateY(-2px); }
+    .generate-btn.disabled{ background:#f0f0f0; color:#999; cursor:not-allowed; box-shadow:none; }
+    .stage-tag{ display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; background:#e8f0ff; color:#2a4bb5; margin-bottom:8px; }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar expanded" id="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="logo">
+      <span class="app-title">SAF Integrated Data & Traceability System</span>
+    </div>
+    <ul>
+      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
+      <li><a href="/production" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li class="active"><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+      <div class="top-right">
+        <img src="/images/notif.png" class="top-icon">
+        <a href="/profile"><img src="/images/admin.png" class="top-icon"></a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- HEADER -->
+      <div class="card detail-header">
+        <div class="back-section">
+          <a href="/traceability" class="back-btn">←</a>
+          <div>
+            <p class="breadcrumb">Blockchain → Record Detail</p>
+            <h2>Record Detail</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMMUTABLE -->
+      <div class="immutable-box">
+        <b>This data is FINAL and immutable.</b>
+        It cannot be modified after being recorded on blockchain.
+      </div>
+
+      <!-- FUELING INFO -->
+      <% if (typeof traceData !== 'undefined' && traceData.fueling) { %>
+      <div class="card detail-card">
+        <h3 class="section-title green">Fueling Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <p>Blockchain TX ID</p>
+            <h4 style="font-size:13px; font-family:monospace; word-break:break-all;">
+              <%= traceData.fueling.blockchain_tx_id || '-' %>
+            </h4>
+          </div>
+          <div class="detail-item">
+            <p>Tank ID</p>
+            <h4><%= traceData.fueling.tank_id || '-' %></h4>
+          </div>
+          <div class="detail-item">
+            <p>Fuel Volume / Vfuel (L)</p>
+            <h4><%= traceData.fueling.Vfuel ? traceData.fueling.Vfuel.toLocaleString() : '-' %></h4>
+          </div>
+          <div class="detail-item">
+            <p>SAF Concentration / n (%)</p>
+            <h4><%= traceData.fueling.n || '-' %>%</h4>
+          </div>
+          <div class="detail-item">
+            <p>Neat SAF Volume / Vn_fuel (L)</p>
+            <h4><%= traceData.fueling.Vn_fuel ? traceData.fueling.Vn_fuel.toFixed(2) : '-' %></h4>
+          </div>
+          <div class="detail-item">
+            <p>Fueling Date & Time</p>
+            <h4 style="font-size:14px;"><%= traceData.fueling.fueling_datetime || '-' %></h4>
+          </div>
+          <div class="detail-item">
+            <p>Recipient</p>
+            <h4><%= traceData.fueling.recipient ? traceData.fueling.recipient.name : '-' %></h4>
+            <small><%= traceData.fueling.recipient ? traceData.fueling.recipient.address : '' %></small>
+          </div>
+          <div class="detail-item">
+            <p>Contract Number</p>
+            <h4><%= traceData.fueling.recipient ? traceData.fueling.recipient.contract_number : '-' %></h4>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- TRACE PER BATCH -->
+      <% if (typeof traceData !== 'undefined' && traceData.trace && traceData.trace.length > 0) { %>
+        <% traceData.trace.forEach(function(batchTrace) { %>
+
+        <div class="card detail-card">
+          <h3 class="section-title green">
+            Batch Trace — <span style="font-family:monospace;"><%= batchTrace.batch_id %></span>
+          </h3>
+
+          <!-- PRODUCTION -->
+          <% if (batchTrace.production) { %>
+          <div style="margin-bottom:28px;">
+            <span class="stage-tag">Production</span>
+            <div class="detail-grid">
+              <div class="detail-item"><p>Production Date</p><h4><%= batchTrace.production.production_datetime || '-' %></h4></div>
+              <div class="detail-item"><p>Location</p><h4><%= batchTrace.production.production_location || '-' %></h4></div>
+              <div class="detail-item"><p>Pathway</p><h4><%= batchTrace.production.pathway || '-' %></h4></div>
+              <div class="detail-item"><p>Input Volume / Vi (L)</p><h4><%= batchTrace.production.Vi || '-' %></h4></div>
+              <div class="detail-item"><p>Neat SAF / Vn (L)</p><h4><%= batchTrace.production.Vn || '-' %></h4></div>
+              <div class="detail-item"><p>Heating Value / HV</p><h4><%= batchTrace.production.HV || '-' %></h4></div>
+              <div class="detail-item"><p>SAF Emission</p><h4 style="font-size:14px;"><%= batchTrace.production.SAF_emission ? batchTrace.production.SAF_emission.toFixed(4) : '-' %></h4></div>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- FEEDSTOCK -->
+          <% if (batchTrace.feedstock) { %>
+          <div style="margin-bottom:28px;">
+            <span class="stage-tag">Feedstock</span>
+            <div class="detail-grid">
+              <div class="detail-item"><p>Supplier</p><h4><%= batchTrace.feedstock.supplier || '-' %></h4></div>
+              <div class="detail-item"><p>Origin</p><h4><%= batchTrace.feedstock.origin || '-' %></h4></div>
+              <div class="detail-item"><p>Type</p><h4><%= batchTrace.feedstock.type || '-' %></h4></div>
+              <div class="detail-item"><p>Volume (L)</p><h4><%= batchTrace.feedstock.volume || '-' %></h4></div>
+              <div class="detail-item"><p>Emission</p><h4><%= batchTrace.feedstock.emission || '-' %></h4></div>
+              <div class="detail-item"><p>Receiving Date</p><h4 style="font-size:13px;"><%= batchTrace.feedstock.receiving_date || '-' %></h4></div>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- LOADING -->
+          <% if (batchTrace.loading) { %>
+          <div style="margin-bottom:28px;">
+            <span class="stage-tag">Loading</span>
+            <div class="detail-grid">
+              <div class="detail-item"><p>Loading Date</p><h4><%= batchTrace.loading.loading_datetime || '-' %></h4></div>
+              <div class="detail-item"><p>Vload (L)</p><h4><%= batchTrace.loading.Vload || '-' %></h4></div>
+              <div class="detail-item"><p>Vship_in (L)</p><h4><%= batchTrace.loading.Vship_in || '-' %></h4></div>
+              <div class="detail-item"><p>Loss Loading (L)</p><h4><%= batchTrace.loading.Lload || '-' %></h4></div>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- SHIPPING -->
+          <% if (batchTrace.shipping) { %>
+          <div style="margin-bottom:28px;">
+            <span class="stage-tag">Shipping</span>
+            <div class="detail-grid">
+              <div class="detail-item"><p>Shipping Date</p><h4><%= batchTrace.shipping.shipping_datetime || '-' %></h4></div>
+              <div class="detail-item"><p>Shipment ID</p><h4><%= batchTrace.shipping.shipment_id || '-' %></h4></div>
+              <div class="detail-item"><p>Transportation</p><h4><%= batchTrace.shipping.transportation_type || '-' %></h4></div>
+              <div class="detail-item"><p>Vship_out (L)</p><h4><%= batchTrace.shipping.Vship_out || '-' %></h4></div>
+              <div class="detail-item"><p>Loss Shipping (L)</p><h4><%= batchTrace.shipping.Lship || '-' %></h4></div>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- TERMINAL -->
+          <% if (batchTrace.terminal) { %>
+          <div style="margin-bottom:12px;">
+            <span class="stage-tag">Terminal</span>
+            <div class="detail-grid">
+              <div class="detail-item"><p>Terminal Date</p><h4><%= batchTrace.terminal.terminal_datetime || '-' %></h4></div>
+              <div class="detail-item"><p>Terminal Location</p><h4><%= batchTrace.terminal.terminal_location || '-' %></h4></div>
+              <div class="detail-item"><p>Tank ID</p><h4><%= batchTrace.terminal.tank_id || '-' %></h4></div>
+              <div class="detail-item"><p>Vtank_in (L)</p><h4><%= batchTrace.terminal.Vtank_in || '-' %></h4></div>
+              <div class="detail-item"><p>Loss Terminal (L)</p><h4><%= batchTrace.terminal.Lterm || '-' %></h4></div>
+              <div class="detail-item"><p>Vi_term_in (L)</p><h4><%= batchTrace.terminal.Vi_term_in || '-' %></h4></div>
+              <div class="detail-item"><p>Vn_term_in (L)</p><h4><%= batchTrace.terminal.Vn_term_in || '-' %></h4></div>
+              <div class="detail-item"><p>SAF Emission</p><h4 style="font-size:14px;"><%= batchTrace.terminal.SAF_emission ? batchTrace.terminal.SAF_emission.toFixed(4) : '-' %></h4></div>
+            </div>
+          </div>
+          <% } %>
+
+        </div>
+
+        <% }) %>
+      <% } %>
+
+      <!-- EMISSION SUMMARY -->
+      <div class="card detail-card">
+        <h3 class="section-title green">Life Cycle Emissions Information</h3>
+        <div class="emission-grid">
+          <div class="emission-item">
+            <p>Core Life Cycle Emissions</p>
+            <h2>13.9</h2>
+            <small>gCO2e/MJ</small>
+          </div>
+          <div class="emission-item">
+            <p>ILUC</p>
+            <h2>0.0</h2>
+            <small>gCO2e/MJ</small>
+          </div>
+          <div class="emission-item">
+            <p>Total Life Cycle Emissions</p>
+            <h2>13.9</h2>
+            <small>gCO2e/MJ</small>
+          </div>
+          <div class="emission-item">
+            <p>Emission Reduction</p>
+            <h2>84.4%</h2>
+            <small>vs Fossil Fuel (89 gCO2e/MJ)</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- POS -->
+      <div class="card pos-card">
+        <div class="pos-header">
+          <div>
+            <h2>Proof of Sustainability (PoS)</h2>
+            <% if (role === "Aviation Fuel Business") { %>
+              <p class="pos-desc">
+                PoS dapat di-generate dan didownload oleh Aviation Fuel Business User
+                berdasarkan data blockchain yang sudah final sesuai standar CORSIA.
+              </p>
+            <% } else { %>
+              <p class="pos-desc">
+                PoS generation dan download hanya untuk Aviation Fuel Business User.
+              </p>
+            <% } %>
+          </div>
+          <% if (role === "Aviation Fuel Business") { %>
+            <div class="access-valid">✔ You have access</div>
+          <% } else { %>
+            <div class="access-invalid">🔒 Access Restricted</div>
+          <% } %>
+        </div>
+
+        <% if (role === "Aviation Fuel Business" && typeof traceData !== 'undefined' && traceData.fueling) { %>
+          <a href="/pos/blockchain/<%= traceData.fueling.blockchain_tx_id %>">
+            <button class="generate-btn">📄 Generate PoS</button>
+          </a>
+        <% } else { %>
+          <button class="generate-btn disabled" disabled>📄 Access Restricted</button>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("expanded");
+}
+</script>
+</body>
+</html>
