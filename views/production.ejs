@@ -8,73 +8,7 @@
 
   <link rel="stylesheet" href="/css/dashboard.css">
   <link rel="stylesheet" href="/css/form.css">
-<style>
-  /* Fix layout grid agar setiap form-group tetap utuh (label + input tidak terpisah) */
 
-  .form-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 24px;
-    align-items: start;   /* ← ini kunci: item rata atas, tidak di-stretch */
-  }
-
-  .form-grid-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px 24px;
-    align-items: start;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;             /* ← jarak antara label dan input, bukan antar item */
-  }
-
-  .form-group label {
-    margin-bottom: 0;     /* hapus margin bawaan jika ada */
-    font-weight: 600;
-    font-size: 14px;
-    color: #1e2b50;
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    height: 48px;
-    border: 1px solid #d0d5e8;
-    border-radius: 10px;
-    padding: 0 14px;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: #5b73c8;
-    box-shadow: 0 0 0 3px rgba(91, 115, 200, 0.15);
-  }
-
-  .form-group input[readonly] {
-    background: #f0f2f8;
-    color: #777;
-    cursor: not-allowed;
-  }
-
-  .form-section {
-    margin-bottom: 32px;
-  }
-
-  .form-section h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1e2b50;
-    margin-bottom: 18px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #e8ecf8;
-  }
-</style>
 </head>
 
 <body>
@@ -136,12 +70,37 @@
         ☰
       </div>
 
-      <div class="top-right">
-
-        <img src="/images/notif.png">
-
-        <img src="/images/admin.png">
-
+            <div class="top-right">
+        <div style="position:relative;">
+          <img src="/images/notif.png" id="notifBtn" style="width:24px;height:24px;cursor:pointer;opacity:0.6;vertical-align:middle;">
+          <div id="notifDropdown" style="display:none;position:absolute;right:0;top:36px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;z-index:999;padding:16px;">
+            <p style="font-size:13px;color:#888;">Tidak ada notifikasi baru</p>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div id="profileBtn" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <img src="/images/admin.png" style="width:24px;height:24px;opacity:0.6;vertical-align:middle;">
+            <span style="font-size:14px;font-weight:600;color:#333;"><%= user || 'User' %></span>
+          </div>
+          <div id="profileDropdown" style="display:none;position:absolute;right:0;top:36px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:220px;z-index:999;padding:16px;">
+            <div style="background:linear-gradient(135deg,#17338f,#3556c9);border-radius:10px;padding:20px;text-align:center;margin-bottom:12px;">
+              <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <img src="/images/admin.png" style="width:30px;filter:brightness(0) invert(1);">
+              </div>
+              <h3 style="color:white;font-size:14px;font-weight:700;margin-bottom:4px;"><%= user || 'User' %></h3>
+              <span style="background:rgba(255,255,255,0.2);color:white;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;"><%= role || '-' %></span>
+            </div>
+            <a href="/profile" style="display:flex;align-items:center;gap:10px;padding:10px 12px;color:#333;text-decoration:none;font-size:13px;border-radius:8px;">
+              <span style="width:28px;height:28px;background:#e8f0fe;border-radius:8px;display:flex;align-items:center;justify-content:center;">👤</span>
+              View Profile
+            </a>
+            <div style="height:1px;background:#f0f0f0;margin:8px 0;"></div>
+            <a href="/logout" style="display:flex;align-items:center;gap:10px;padding:10px 12px;color:#e53935;text-decoration:none;font-size:13px;border-radius:8px;">
+              <span style="width:28px;height:28px;background:#fff0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;">🚪</span>
+              Logout
+            </a>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -195,8 +154,12 @@
                 <select name="production_location" required>
                   <option value="">Select Production Location</option>
                   <option value="RU II Dumai">RU II Dumai</option>
+                  <option value="RU II Sungai Pakning">RU II Sungai Pakning</option>
                   <option value="RU III Plaju">RU III Plaju</option>
                   <option value="RU IV Cilacap">RU IV Cilacap</option>
+                  <option value="RU V Balikpapan">RU V Balikpapan</option>
+                  <option value="RU VI Balongan">RU VI Balongan</option>
+                  <option value="RU VII Kasim">RU VII Kasim</option>
                 </select>
               </div>
 
@@ -204,8 +167,13 @@
                 <label>Production Pathway *</label>
                 <select name="pathway" required>
                   <option value="">Select Production Pathway</option>
-                  <option value="HEFA">HEFA</option>
-                  <option value="Co-processing">Co-processing</option>
+                  <option value="HEFA-SPK">HEFA-SPK</option>
+                  <option value="AtJ-SPK (Isobutanol)">AtJ-SPK (Isobutanol)</option>
+                  <option value="AtJ-SPK (Ethanol)">AtJ-SPK (Ethanol)</option>
+                  <option value="FT-SPK">FT-SPK</option>
+                  <option value="SIP">SIP</option>
+                  <option value="Co-processed Oil to be Used for Replacement of Jet Fuel">Co-processed Oil to be Used for Replacement of Jet Fuel</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -283,7 +251,10 @@
                   <option value="">Select Type of Feedstock</option>
                   <option value="Used Cooking Oil">Used Cooking Oil</option>
                   <option value="Palm Oil Mill Effluent">Palm Oil Mill Effluent</option>
-                  <option value="Waste Animal Fat">Waste Animal Fat</option>
+                  <option value="Jatropha Oil">Jatropha Oil</option>
+                  <option value="Waste Animal Fats">Waste Animal Fats</option>
+                  <option value="Algae Biomass">Algae Biomass</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
@@ -341,8 +312,7 @@
 function toggleSidebar() {
   document
     .getElementById("sidebar")
-    .classList
-    .toggle("expanded");
+    .classList.toggle("collapsed");
 }
 
 // Hitung SAF Emission otomatis saat Vn atau HV berubah
@@ -368,6 +338,31 @@ document.querySelector('[name="Vn"]').addEventListener('input', hitungSAFEmissio
 document.querySelector('[name="HV"]').addEventListener('input', hitungSAFEmission);
 document.querySelector('[name="pathway"]').addEventListener('change', hitungSAFEmission);
 
+
+// Profile & Notif Toggle
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+const notifBtn = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+
+if (profileBtn) {
+  profileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (notifDropdown) notifDropdown.style.display = 'none';
+    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+  });
+}
+if (notifBtn) {
+  notifBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (profileDropdown) profileDropdown.style.display = 'none';
+    notifDropdown.style.display = notifDropdown.style.display === 'block' ? 'none' : 'block';
+  });
+}
+document.addEventListener('click', function() {
+  if (profileDropdown) profileDropdown.style.display = 'none';
+  if (notifDropdown) notifDropdown.style.display = 'none';
+});
 </script>
 
 </body>

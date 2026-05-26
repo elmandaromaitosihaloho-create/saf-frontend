@@ -18,7 +18,16 @@
     </div>
     <ul>
       <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
-      <li><a href="/production" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
+      <li>
+        <% if (role === "Production") { %><a href="/production" class="menu-link">
+        <% } else if (role === "Loading") { %><a href="/loading" class="menu-link">
+        <% } else if (role === "Shipping") { %><a href="/shipping" class="menu-link">
+        <% } else if (role === "Terminal") { %><a href="/terminal" class="menu-link">
+        <% } else { %><a href="/fueling" class="menu-link">
+        <% } %>
+          <img src="/images/catatan.png"><span>Data Input</span>
+        </a>
+      </li>
       <li class="active"><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
     </ul>
   </div>
@@ -28,8 +37,36 @@
     <div class="topbar">
       <div class="menu-btn" onclick="toggleSidebar()">☰</div>
       <div class="top-right">
-        <img src="/images/notif.png" class="top-icon">
-        <a href="/profile"><img src="/images/admin.png" class="top-icon"></a>
+        <div style="position:relative;">
+          <img src="/images/notif.png" id="notifBtn" style="width:24px;height:24px;cursor:pointer;opacity:0.6;vertical-align:middle;">
+          <div id="notifDropdown" style="display:none;position:absolute;right:0;top:36px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;z-index:999;padding:16px;">
+            <p style="font-size:13px;color:#888;">Tidak ada notifikasi baru</p>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div id="profileBtn" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <img src="/images/admin.png" style="width:24px;height:24px;opacity:0.6;vertical-align:middle;">
+            <span style="font-size:14px;font-weight:600;color:#333;"><%= user || 'User' %></span>
+          </div>
+          <div id="profileDropdown" style="display:none;position:absolute;right:0;top:36px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:220px;z-index:999;padding:16px;">
+            <div style="background:linear-gradient(135deg,#17338f,#3556c9);border-radius:10px;padding:20px;text-align:center;margin-bottom:12px;">
+              <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <img src="/images/admin.png" style="width:30px;filter:brightness(0) invert(1);">
+              </div>
+              <h3 style="color:white;font-size:14px;font-weight:700;margin-bottom:4px;"><%= user || 'User' %></h3>
+              <span style="background:rgba(255,255,255,0.2);color:white;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;"><%= role || '-' %></span>
+            </div>
+            <a href="/profile" style="display:flex;align-items:center;gap:10px;padding:10px 12px;color:#333;text-decoration:none;font-size:13px;border-radius:8px;">
+              <span style="width:28px;height:28px;background:#e8f0fe;border-radius:8px;display:flex;align-items:center;justify-content:center;">👤</span>
+              View Profile
+            </a>
+            <div style="height:1px;background:#f0f0f0;margin:8px 0;"></div>
+            <a href="/logout" style="display:flex;align-items:center;gap:10px;padding:10px 12px;color:#e53935;text-decoration:none;font-size:13px;border-radius:8px;">
+              <span style="width:28px;height:28px;background:#fff0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;">🚪</span>
+              Logout
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -123,8 +160,49 @@
 
 <script>
 function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("expanded");
+  document.getElementById("sidebar").classList.toggle("collapsed");
 }
+function toggleProfile() {
+  document.getElementById("profileDropdown").style.display =
+    document.getElementById("profileDropdown").style.display === "block" ? "none" : "block";
+}
+function toggleNotif() {
+  document.getElementById("notifDropdown").style.display =
+    document.getElementById("notifDropdown").style.display === "block" ? "none" : "block";
+}
+window.onclick = function(e) {
+  if (!e.target.closest(".profile-wrapper")) {
+    const p = document.getElementById("profileDropdown");
+    if (p) p.style.display = "none";
+  }
+  if (!e.target.closest(".notif-wrapper")) {
+    const n = document.getElementById("notifDropdown");
+    if (n) n.style.display = "none";
+  }
+}
+
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+const notifBtn = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+if (profileBtn) {
+  profileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (notifDropdown) notifDropdown.style.display = 'none';
+    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+  });
+}
+if (notifBtn) {
+  notifBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (profileDropdown) profileDropdown.style.display = 'none';
+    notifDropdown.style.display = notifDropdown.style.display === 'block' ? 'none' : 'block';
+  });
+}
+document.addEventListener('click', function() {
+  if (profileDropdown) profileDropdown.style.display = 'none';
+  if (notifDropdown) notifDropdown.style.display = 'none';
+});
 </script>
 </body>
 </html>

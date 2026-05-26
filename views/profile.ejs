@@ -4,109 +4,289 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile User</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
-</head>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+    body { background:#f4f6fb; }
+    .container { display:flex; min-height:100vh; }
 
+    /* SIDEBAR */
+    .sidebar { width:240px; min-width:240px; background:#17338f; display:flex; flex-direction:column; transition:width 0.3s ease; overflow:hidden; flex-shrink:0; }
+    .sidebar.collapsed { width:70px; min-width:70px; }
+    .sidebar-header { display:flex; align-items:flex-start; gap:10px; padding:16px 14px; border-bottom:1px solid rgba(255,255,255,0.1); min-height:80px; }
+    .sidebar-logo { width:38px; height:38px; flex-shrink:0; margin-top:2px; }
+    .sidebar-title { color:white; font-size:12px; font-weight:700; line-height:1.45; white-space:normal; display:block; }
+    .sidebar.collapsed .sidebar-title { display:none; }
+    .sidebar ul { list-style:none; padding:14px 10px; margin:0; display:flex; flex-direction:column; gap:4px; }
+    .sidebar ul li a { display:flex; align-items:center; gap:14px; padding:11px 14px; border-radius:10px; color:rgba(255,255,255,0.78); text-decoration:none; font-size:14px; font-weight:500; white-space:nowrap; background:transparent; transition:background 0.2s; }
+    .sidebar ul li a:hover { background:rgba(255,255,255,0.13); color:white; }
+    .sidebar ul li.active > a { background:#233f99; color:white; }
+    .sidebar ul li a img { width:20px; height:20px; flex-shrink:0; filter:brightness(0) invert(1); opacity:0.85; }
+    .sidebar ul li a span { display:inline; }
+    .sidebar.collapsed ul li a span { display:none; }
+
+    /* MAIN */
+    .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+    .topbar { height:64px; background:white; display:flex; align-items:center; justify-content:space-between; padding:0 28px; box-shadow:0 1px 4px rgba(0,0,0,0.07); position:sticky; top:0; z-index:100; }
+    .menu-btn { font-size:22px; cursor:pointer; color:#333; background:none; border:none; padding:4px 8px; }
+    .topbar-title { font-size:18px; font-weight:700; color:#1d2b53; }
+    .top-right { display:flex; align-items:center; gap:20px; }
+    .top-icon { width:22px; cursor:pointer; opacity:0.65; }
+
+    /* CONTENT */
+    .content { padding:28px 32px; flex:1; }
+
+    /* PROFILE HERO */
+    .profile-hero {
+      background: linear-gradient(135deg, #17338f 0%, #3556c9 100%);
+      border-radius: 20px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(23,51,143,0.25);
+    }
+    .profile-hero-left { display:flex; align-items:center; gap:24px; }
+    .profile-avatar-wrap {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      border: 3px solid rgba(255,255,255,0.5);
+      overflow: hidden;
+    }
+    .profile-avatar-wrap img { width:60px; filter:brightness(0) invert(1); opacity:0.9; }
+    .profile-hero-info h1 { color:white; font-size:24px; font-weight:700; margin-bottom:6px; }
+    .profile-hero-info .role-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .profile-hero-info .org { color:rgba(255,255,255,0.8); font-size:13px; }
+    .profile-hero-right { text-align:right; }
+    .profile-hero-right small { color:rgba(255,255,255,0.6); font-size:12px; display:block; margin-bottom:4px; }
+    .profile-hero-right h3 { color:white; font-size:15px; font-family:monospace; }
+
+    /* CARDS ROW */
+    .cards-row { display:grid; grid-template-columns:1fr 2fr; gap:20px; }
+
+    /* INFO CARD */
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .info-card h3 { font-size:15px; font-weight:700; color:#1d2b53; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f0f2f8; }
+    .info-row { display:flex; flex-direction:column; gap:16px; }
+    .info-item label { font-size:11px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px; }
+    .info-item span { font-size:14px; color:#1d2b53; font-weight:600; }
+
+    /* ACCESS CARD */
+    .access-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .access-card h3 { font-size:15px; font-weight:700; color:#1d2b53; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f0f2f8; }
+    .access-list { display:flex; flex-direction:column; gap:10px; }
+    .access-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: #f8f9fc;
+      transition: background 0.2s;
+    }
+    .access-item:hover { background: #f0f2f8; }
+    .access-item-left { display:flex; align-items:center; gap:10px; }
+    .access-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .access-dot.granted { background:#2e7d32; }
+    .access-dot.denied { background:#e0e0e0; }
+    .access-name { font-size:14px; color:#333; font-weight:500; }
+    .access-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-granted { background:#d4edda; color:#155724; }
+    .badge-denied { background:#f0f0f0; color:#999; }
+  </style>
+</head>
 <body>
 <div class="container">
 
   <!-- SIDEBAR -->
-  <div class="sidebar expanded">
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img src="/images/pertamina-aja.png" class="logo">
-      <span class="app-title">SAF Integrated Data & Traceability System</span>
+      <img src="/images/pertamina-aja.png" class="sidebar-logo">
+      <span class="sidebar-title">SAF Integrated Data &amp; Traceability System</span>
     </div>
     <ul>
-      <li><a href="/dashboard" class="menu-link"><img src="/images/home.png"><span>Dashboard</span></a></li>
-      <li><a href="/production" class="menu-link"><img src="/images/catatan.png"><span>Data Input</span></a></li>
-      <li><a href="/traceability" class="menu-link"><img src="/images/blockchain.png"><span>Traceability</span></a></li>
+      <li>
+        <a href="/dashboard"><img src="/images/home.png"><span>Dashboard</span></a>
+      </li>
+      <li>
+        <% if (role === "Production") { %>
+          <a href="/production"><img src="/images/catatan.png"><span>Data Input</span></a>
+        <% } else if (role === "Loading") { %>
+          <a href="/loading"><img src="/images/catatan.png"><span>Data Input</span></a>
+        <% } else if (role === "Shipping") { %>
+          <a href="/shipping"><img src="/images/catatan.png"><span>Data Input</span></a>
+        <% } else if (role === "Terminal") { %>
+          <a href="/terminal"><img src="/images/catatan.png"><span>Data Input</span></a>
+        <% } else { %>
+          <a href="/fueling"><img src="/images/catatan.png"><span>Data Input</span></a>
+        <% } %>
+      </li>
+      <li>
+        <a href="/traceability"><img src="/images/blockchain.png"><span>Traceability</span></a>
+      </li>
     </ul>
   </div>
 
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div class="menu-btn">☰</div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title">Profile</span>
+      </div>
       <div class="top-right">
-        <img src="/images/notif.png">
-        <img src="/images/admin.png">
+        <img src="/images/notif.png" class="top-icon">
+        <img src="/images/admin.png" class="top-icon">
       </div>
     </div>
 
     <div class="content">
 
-      <!-- PROFILE CARD -->
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:30px; flex-wrap:wrap;">
-          <div style="display:flex; gap:24px; align-items:center;">
-            <img src="/images/profile-user.png" style="width:100px;">
-            <div>
-              <h1 style="font-size:26px; margin-bottom:8px;">
-                <%= typeof user !== 'undefined' ? user : 'User' %>
-              </h1>
-              <p><%= typeof role !== 'undefined' ? role : '-' %> Team</p>
-              <br>
-              <p>📍 Pertamina Patra Niaga</p>
-            </div>
+      <!-- HERO -->
+      <div class="profile-hero">
+        <div class="profile-hero-left">
+          <div class="profile-avatar-wrap">
+            <img src="/images/profile.png">
           </div>
-          <div>
-            <p style="color:#777;">Username</p>
-            <h2 style="font-size:18px; font-family:monospace;">
-              <%= typeof user !== 'undefined' ? user : '-' %>
-            </h2>
+          <div class="profile-hero-info">
+            <h1><%= typeof user !== 'undefined' ? user : 'User' %></h1>
+            <div class="role-badge"><%= typeof role !== 'undefined' ? role : '-' %> Team</div>
+            <p class="org">📍 Pertamina Patra Niaga</p>
           </div>
+        </div>
+        <div class="profile-hero-right">
+          <small>Username</small>
+          <h3><%= typeof user !== 'undefined' ? user : '-' %></h3>
         </div>
       </div>
 
-      <!-- INFO -->
-      <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; margin-top:28px;">
+      <!-- CARDS -->
+      <div class="cards-row">
 
         <!-- USER INFO -->
-        <div class="card">
-          <h2 style="margin-bottom:20px;">User Information</h2>
-          <p><b>Username</b> : <%= typeof user !== 'undefined' ? user : '-' %></p><br>
-          <p><b>Role</b> : <%= typeof role !== 'undefined' ? role : '-' %></p><br>
-          <p><b>Organization</b> : Pertamina Patra Niaga</p><br>
-          <p><b>MSP</b> : Org1MSP</p>
+        <div class="info-card">
+          <h3>User Information</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>Username</label>
+              <span><%= typeof user !== 'undefined' ? user : '-' %></span>
+            </div>
+            <div class="info-item">
+              <label>Role</label>
+              <span><%= typeof role !== 'undefined' ? role : '-' %></span>
+            </div>
+            <div class="info-item">
+              <label>Organization</label>
+              <span>Pertamina Patra Niaga</span>
+            </div>
+            <div class="info-item">
+              <label>MSP</label>
+              <span>Org1MSP</span>
+            </div>
+          </div>
         </div>
 
-        <!-- ACCESS TABLE -->
-        <div class="card">
-          <h2 style="margin-bottom:20px;">System Role & Access</h2>
-          <table>
-            <tbody>
-              <tr>
-                <td>Production</td>
-                <td><%= role === 'Production' ? '✔ Access Granted' : '❌ No Access' %></td>
-              </tr>
-              <tr>
-                <td>Loading</td>
-                <td><%= role === 'Loading' ? '✔ Access Granted' : '❌ No Access' %></td>
-              </tr>
-              <tr>
-                <td>Shipping</td>
-                <td><%= role === 'Shipping' ? '✔ Access Granted' : '❌ No Access' %></td>
-              </tr>
-              <tr>
-                <td>Terminal</td>
-                <td><%= role === 'Terminal' ? '✔ Access Granted' : '❌ No Access' %></td>
-              </tr>
-              <tr>
-                <td>Aviation Fuel Business</td>
-                <td><%= role === 'Aviation Fuel Business' ? '✔ Access Granted' : '❌ No Access' %></td>
-              </tr>
-              <tr>
-                <td>Traceability</td>
-                <td>✔ Access Granted</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- ACCESS -->
+        <div class="access-card">
+          <h3>System Role & Access</h3>
+          <div class="access-list">
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot <%= role === 'Production' ? 'granted' : 'denied' %>"></div>
+                <span class="access-name">Production</span>
+              </div>
+              <span class="access-badge <%= role === 'Production' ? 'badge-granted' : 'badge-denied' %>">
+                <%= role === 'Production' ? '✓ Access Granted' : 'No Access' %>
+              </span>
+            </div>
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot <%= role === 'Loading' ? 'granted' : 'denied' %>"></div>
+                <span class="access-name">Loading</span>
+              </div>
+              <span class="access-badge <%= role === 'Loading' ? 'badge-granted' : 'badge-denied' %>">
+                <%= role === 'Loading' ? '✓ Access Granted' : 'No Access' %>
+              </span>
+            </div>
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot <%= role === 'Shipping' ? 'granted' : 'denied' %>"></div>
+                <span class="access-name">Shipping</span>
+              </div>
+              <span class="access-badge <%= role === 'Shipping' ? 'badge-granted' : 'badge-denied' %>">
+                <%= role === 'Shipping' ? '✓ Access Granted' : 'No Access' %>
+              </span>
+            </div>
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot <%= role === 'Terminal' ? 'granted' : 'denied' %>"></div>
+                <span class="access-name">Terminal</span>
+              </div>
+              <span class="access-badge <%= role === 'Terminal' ? 'badge-granted' : 'badge-denied' %>">
+                <%= role === 'Terminal' ? '✓ Access Granted' : 'No Access' %>
+              </span>
+            </div>
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot <%= role === 'Aviation Fuel Business' ? 'granted' : 'denied' %>"></div>
+                <span class="access-name">Aviation Fuel Business</span>
+              </div>
+              <span class="access-badge <%= role === 'Aviation Fuel Business' ? 'badge-granted' : 'badge-denied' %>">
+                <%= role === 'Aviation Fuel Business' ? '✓ Access Granted' : 'No Access' %>
+              </span>
+            </div>
+
+            <div class="access-item">
+              <div class="access-item-left">
+                <div class="access-dot granted"></div>
+                <span class="access-name">Traceability</span>
+              </div>
+              <span class="access-badge badge-granted">✓ Access Granted</span>
+            </div>
+
+          </div>
         </div>
 
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+</script>
 </body>
 </html>
-

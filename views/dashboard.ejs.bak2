@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+    body { background:#f4f6fb; }
+    .container { display:flex; min-height:100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background: #17338f;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .sidebar.collapsed { width: 70px; }
+
+    .sidebar-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 16px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      min-height: 80px;
+    }
+    .sidebar-logo { width: 38px; height: 38px; flex-shrink: 0; margin-top: 2px; }
+    .sidebar-title {
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+      white-space: normal;
+      word-break: keep-all;
+      overflow: visible;
+      display: block;
+      max-width: 160px;
+    }
+    .sidebar.collapsed .sidebar-title { display: none; }
+
+    .sidebar-menu { list-style: none; padding: 16px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-menu li a {      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+    .sidebar-menu li a:hover { background: rgba(255,255,255,0.12); color: white; }
+    .sidebar-menu li.active a { background: #233f99; color: white; }
+    .sidebar-menu li a img { width: 22px; flex-shrink: 0; filter: brightness(0) invert(1); opacity: 0.8; }
+    .sidebar-menu li.active a img { opacity: 1; }
+    .sidebar-menu li a span { white-space: nowrap; overflow: hidden; }
+    .sidebar.collapsed .sidebar-menu li a span { display: none; }
+
+    /* MAIN */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* TOPBAR */
+    .topbar {
+      height: 64px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .menu-btn { font-size: 22px; cursor: pointer; color: #333; background: none; border: none; padding: 4px 8px; }
+    .topbar-title { font-size: 18px; font-weight: 700; color: #1d2b53; }
+    .top-right { display: flex; align-items: center; gap: 20px; }
+    .top-icon { width: 22px; cursor: pointer; opacity: 0.65; }
+    .profile-trigger { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .profile-icon { width: 32px; }
+    .profile-name { font-size: 14px; font-weight: 600; color: #333; }
+
+    /* CONTENT */
+    .content { padding: 28px 32px; flex: 1; }
+    .dashboard-title { font-size: 26px; font-weight: 700; color: #1d2b53; margin-bottom: 22px; }
+
+    /* TOP CARDS */
+    .top-cards { display: flex; gap: 16px; margin-bottom: 24px; }
+    .top-card {
+      flex: 1;
+      background: white;
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .card-icon img { width: 28px; }
+    .card-icon.yellow { background: #fff8e1; }
+    .card-icon.blue   { background: #e3f0ff; }
+    .card-icon.red    { background: #ffeaea; }
+    .card-icon.orange { background: #fff3e0; }
+    .card-icon.green  { background: #e8f5e9; }
+    .card-info small { font-size: 12px; color: #888; display: block; margin-bottom: 4px; }
+    .card-info h3 { font-size: 20px; font-weight: 700; color: #1d2b53; }
+    .green-text { color: #2e7d32 !important; }
+
+    /* OVERVIEW ROW */
+    .overview-row { display: flex; gap: 20px; margin-bottom: 24px; }
+
+    /* BATCH OVERVIEW */
+    .batch-box, .status-box {
+      background: white;
+      border-radius: 16px;
+      padding: 22px 24px;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .batch-box h3, .status-box h3 { font-size: 15px; font-weight: 700; color: #1d2b53; margin-bottom: 16px; }
+    .batch-cards, .status-cards { display: flex; gap: 12px; }
+    .batch-card, .status-card {
+      flex: 1;
+      border: 1px solid #e8eaf0;
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .batch-card p, .status-card small {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 10px;
+      display: block;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+    .batch-card h2 { font-size: 22px; font-weight: 700; }
+    .status-card img { width: 26px; margin-bottom: 6px; }
+    .status-card h2 { font-size: 22px; font-weight: 700; color: #1d2b53; }
+    .status-card h2 span { font-size: 13px; color: #888; font-weight: 400; }
+    .red-text   { color: #c62828; }
+    .blue-text  { color: #1565c0; }
+
+    /* TABLE */
+    .newest-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .table-title { font-size: 15px; font-weight: 700; color: #1d2b53; margin-bottom: 16px; }
+    .table-wrapper { overflow-x: auto; }
+    .newest-table { width: 100%; border-collapse: collapse; }
+    .newest-table thead { background: #dce6ff; }
+    .newest-table thead th { padding: 12px 14px; text-align: center; color: #1d2b53; font-size: 13px; font-weight: 600; }
+    .newest-table tbody td { padding: 14px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #333; }
+    .newest-table tbody tr:last-child td { border-bottom: none; }
+    .status-badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+    .badge-valid    { background: #d7f5df; color: #149647; }
+    .badge-warning  { background: #fff0c9; color: #d08a00; }
+    .badge-progress { background: #ffe0e0; color: #c62828; }
+    .action-icon { width: 30px; height: 30px; background: #17338f; border-radius: 8px; padding: 5px; cursor: pointer; }
+
+    /* DROPDOWN */
+    .notif-wrapper, .profile-wrapper { position: relative; }
+    .notif-dropdown, .profile-dropdown {
+      display: none; position: absolute; right: 0; top: 44px;
+      background: white; border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      min-width: 200px; z-index: 999; padding: 16px;
+    }
+    .notif-dropdown.show, .profile-dropdown.show { display: block; }
+    .profile-top { text-align: center; padding-bottom: 12px; border-bottom: 1px solid #eee; margin-bottom: 8px; }
+    .profile-avatar { width: 48px; border-radius: 50%; margin-bottom: 6px; }
+    .profile-top h3 { font-size: 14px; }
+    .profile-top p { font-size: 12px; color: #888; }
+    .profile-menu { display: block; padding: 10px 12px; color: #333; text-decoration: none; font-size: 13px; border-radius: 8px; }
+    .profile-menu:hover { background: #f4f6fb; }
+    .profile-menu.logout { color: #e53935; }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <img src="/images/pertamina-aja.png" class="sidebar-logo">
+      <span class="sidebar-title">SAF Integrated Data &amp; Traceability System</span>
+    </div>
+
+    <ul class="sidebar-menu">
+
+      <li class="active">
+        <a href="/dashboard">
+          <img src="/images/home.png">
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li>
+        <% if (role === "Production") { %>
+          <a href="/production">
+        <% } else if (role === "Loading") { %>
+          <a href="/loading">
+        <% } else if (role === "Shipping") { %>
+          <a href="/shipping">
+        <% } else if (role === "Terminal") { %>
+          <a href="/terminal">
+        <% } else { %>
+          <a href="/fueling">
+        <% } %>
+          <img src="/images/catatan.png">
+          <span>Data Input</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/traceability">
+          <img src="/images/blockchain.png">
+          <span>Traceability</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title">Dashboard</span>
+      </div>
+      <div class="top-right">
+
+        <div class="notif-wrapper">
+          <img src="/images/notif.png" class="top-icon" onclick="toggleNotif()">
+          <div class="notif-dropdown" id="notifDropdown">
+            <p style="font-size:13px; color:#888;">Tidak ada notifikasi baru</p>
+          </div>
+        </div>
+
+        <div class="profile-wrapper">
+          <div class="profile-trigger" onclick="toggleProfile()">
+            <img src="/images/admin.png" class="profile-icon">
+            <span class="profile-name"><%= user || 'User' %></span>
+          </div>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-top">
+              <img src="/images/profile.png" class="profile-avatar">
+              <h3><%= user || 'User' %></h3>
+              <p><%= role || '-' %></p>
+            </div>
+            <a href="/profile" class="profile-menu">👤 View Profile</a>
+            <a href="/logout" class="profile-menu logout">🚪 Logout</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <h1 class="dashboard-title">Dashboard</h1>
+
+      <!-- TOP CARDS -->
+      <div class="top-cards">
+        <div class="top-card">
+          <div class="card-icon yellow"><img src="/images/total-production.png"></div>
+          <div class="card-info">
+            <small>Total Produksi</small>
+            <h3><%= (stats.totalProduksi / 1000).toFixed(2) %> kL</h3>
+          </div>
+        </div>
+        <div class="top-card">
+          <div class="card-icon blue"><img src="/images/total-shipping.png"></div>
+          <div class="card-info">
+            <small>Total Shipping</small>
+            <h3><%= (stats.totalShipping / 1000).toFixed(2) %> kL</h3>
+          </div>
+        </div>
+        <div class="top-card">
+          <div class="card-icon red"><img src="/images/total-fueling.png"></div>
+          <div class="card-info">
+            <small>Total Fueling</small>
+            <h3><%= (stats.totalFueling / 1000).toFixed(2) %> kL</h3>
+          </div>
+        </div>
+        <div class="top-card">
+          <div class="card-icon orange"><img src="/images/current-stock.png"></div>
+          <div class="card-info">
+            <small>Current Stock</small>
+            <h3><%= (stats.currentStock / 1000).toFixed(2) %> kL</h3>
+          </div>
+        </div>
+        <div class="top-card">
+          <div class="card-icon green"><img src="/images/emission.png"></div>
+          <div class="card-info">
+            <small>Emission (GHG)</small>
+            <h3 class="green-text"><%= stats.emissionReduction %>%</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW ROW -->
+      <div class="overview-row">
+
+        <!-- BATCH OVERVIEW -->
+        <div class="batch-box">
+          <h3>Batch Overview</h3>
+          <div class="batch-cards">
+            <div class="batch-card">
+              <p>Total Neat SAF</p>
+              <h2 style="color:#2e7d32;"><%= (overview.totalNeatSAF / 1000).toFixed(1) %> kL</h2>
+            </div>
+            <div class="batch-card">
+              <p>Total Avtur Konvensional</p>
+              <h2 style="color:#1565c0;"><%= (overview.totalAvtur / 1000).toFixed(1) %> kL</h2>
+            </div>
+            <div class="batch-card">
+              <p>Total Loss</p>
+              <h2 style="color:#1d2b53;"><%= (overview.totalLoss / 1000).toFixed(1) %> kL</h2>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA STATUS -->
+        <div class="status-box">
+          <h3>Data Status</h3>
+          <div class="status-cards">
+            <div class="status-card">
+              <img src="/images/valid-batch.png">
+              <small class="green-text">Valid Batch</small>
+              <h2><%= dataStatus.validBatch %> <span>(<%= dataStatus.validPct %>%)</span></h2>
+            </div>
+            <div class="status-card">
+              <img src="/images/warning.png">
+              <small class="red-text">Warning</small>
+              <h2><%= dataStatus.warningBatch %> <span>(<%= dataStatus.warningPct %>%)</span></h2>
+            </div>
+            <div class="status-card">
+              <img src="/images/ready-blockchain.png">
+              <small class="blue-text">Ready for Blockchain</small>
+              <h2><%= dataStatus.readyTraceability %> <span>(<%= dataStatus.readyPct %>%)</span></h2>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- NEWEST DATA -->
+      <div class="newest-card">
+        <h3 class="table-title">Newest Data</h3>
+        <div class="table-wrapper">
+          <table class="newest-table">
+            <thead>
+              <tr>
+                <th>Date and Time</th>
+                <th>Batch ID</th>
+                <th>Stage</th>
+                <th>Volume (kL)</th>
+                <th>Total Loss/Gain</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (newestBatches && newestBatches.length > 0) { %>
+                <% newestBatches.forEach(function(batch) { %>
+                  <tr>
+                    <td><%= batch.created_at ? new Date(batch.created_at).toLocaleString('id-ID') : '-' %></td>
+                    <td><b><%= batch.batch_id %></b></td>
+                    <td>
+                      <% if (batch.terminal) { %>Terminal
+                      <% } else if (batch.shipping) { %>Shipping
+                      <% } else if (batch.loading) { %>Loading
+                      <% } else { %>Production<% } %>
+                    </td>
+                    <td><%= batch.production ? (batch.production.Vf / 1000).toFixed(2) : '-' %></td>
+                    <td><%= batch.loading ? (batch.loading.Lload / 1000).toFixed(2) : '-' %></td>
+                    <td>
+                      <% if (batch.terminal) { %>
+                        <span class="status-badge badge-valid">Valid</span>
+                      <% } else if (batch.production && !batch.loading) { %>
+                        <span class="status-badge badge-warning">Warning</span>
+                      <% } else { %>
+                        <span class="status-badge badge-progress">On Progress</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <a href="/dashboard-detail/<%= batch.batch_id %>">
+                        <img src="/images/logo-mata.png" class="action-icon">
+                      </a>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:30px; color:#888;">
+                    Belum ada data batch
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+function toggleProfile() {
+  document.getElementById("profileDropdown").classList.toggle("show");
+}
+function toggleNotif() {
+  document.getElementById("notifDropdown").classList.toggle("show");
+}
+window.onclick = function(e) {
+  if (!e.target.closest(".profile-wrapper")) {
+    const p = document.getElementById("profileDropdown");
+    if (p) p.classList.remove("show");
+  }
+  if (!e.target.closest(".notif-wrapper")) {
+    const n = document.getElementById("notifDropdown");
+    if (n) n.classList.remove("show");
+  }
+}
+</script>
+
+</body>
+</html>

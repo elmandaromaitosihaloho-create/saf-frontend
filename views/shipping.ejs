@@ -5,48 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shipping Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-    body{ background:#f4f6fb; }
-    .container{ display:flex; min-height:100vh; }
-    .sidebar{ width:260px; background:#5b73c8; color:white; transition:0.3s; overflow:hidden; }
-    .sidebar.collapsed{ width:90px; }
-    .sidebar-header{ display:flex; align-items:center; gap:15px; padding:24px 20px; }
-    .logo{ width:42px; }
-    .app-title{ font-size:14px; font-weight:bold; line-height:1.3; }
-    .sidebar.collapsed .app-title{ display:none; }
-    .sidebar ul{ list-style:none; margin-top:25px; }
-    .sidebar ul li{ margin-bottom:5px; }
-    .menu-link{ display:flex; align-items:center; gap:18px; padding:18px 24px; color:white; text-decoration:none; transition:0.3s; font-size:15px; font-weight:500; }
-    .menu-link:hover{ background:#4059b5; }
-    .sidebar ul li.active .menu-link{ background:#233f99; }
-    .menu-link img{ width:22px; }
-    .sidebar.collapsed .menu-link span{ display:none; }
-    .main{ flex:1; }
-    .topbar{ height:90px; background:white; display:flex; align-items:center; justify-content:space-between; padding:0 35px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
-    .menu-btn{ font-size:38px; cursor:pointer; color:#1e2b50; }
-    .top-right{ display:flex; align-items:center; gap:25px; }
-    .top-right img{ width:26px; cursor:pointer; }
-    .content{ padding:40px; }
-    .dashboard-title{ font-size:32px; color:#1d2b53; margin-bottom:10px; }
-    .dashboard-subtitle{ color:#6f7b99; margin-bottom:35px; font-size:16px; }
-    .card{ background:white; border-radius:24px; padding:35px; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
-    .section-header{ margin-bottom:30px; }
-    .section-header h3{ font-size:24px; color:#1d2b53; margin-bottom:10px; }
-    .section-header p{ color:#6f7b99; font-size:15px; }
-    table{ width:100%; border-collapse:collapse; }
-    thead{ background:#c9d7f7; }
-    thead th{ padding:18px; text-align:center; color:#1d2b53; font-size:15px; }
-    tbody td{ padding:20px 15px; text-align:center; border-bottom:1px solid #ececec; font-size:14px; color:#333; }
-    .status{ padding:8px 16px; border-radius:30px; font-weight:bold; font-size:13px; display:inline-block; }
-    .ready{ background:#d7f5df; color:#149647; }
-    .completed{ background:#fff0c9; color:#d08a00; }
-    .progress{ background:#ffe0e0; color:#c62828; }
-    .btn-action{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; border-radius:12px; text-decoration:none; font-weight:bold; transition:0.3s; font-size:14px; }
-    .btn-action.active{ background:#1f3fa8; color:white; }
-    .btn-action.active:hover{ background:#102a83; }
-    .btn-action.disabled{ background:#d9d9d9; color:#888; border:none; cursor:not-allowed; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 
 <body>
@@ -144,6 +104,24 @@
 <script>
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
+}
+function toggleProfile() {
+  document.getElementById("profileDropdown").style.display =
+    document.getElementById("profileDropdown").style.display === "block" ? "none" : "block";
+}
+function toggleNotif() {
+  document.getElementById("notifDropdown").style.display =
+    document.getElementById("notifDropdown").style.display === "block" ? "none" : "block";
+}
+window.onclick = function(e) {
+  if (!e.target.closest(".profile-wrapper")) {
+    const p = document.getElementById("profileDropdown");
+    if (p) p.style.display = "none";
+  }
+  if (!e.target.closest(".notif-wrapper")) {
+    const n = document.getElementById("notifDropdown");
+    if (n) n.style.display = "none";
+  }
 }
 </script>
 </body>

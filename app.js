@@ -97,6 +97,7 @@ app.post('/login', async (req, res) => {
   if (role === 'Shipping')   return res.redirect('/shipping');
   if (role === 'Terminal')   return res.redirect('/terminal');
   if (role === 'Fueling')    return res.redirect('/fueling');
+  if (role === 'Aviation Fuel Business') return res.redirect('/fueling')
   return res.redirect('/dashboard');
   return res.send("Login Gagal");
 
@@ -106,20 +107,75 @@ app.post('/login', async (req, res) => {
 ================= DASHBOARD =============================
 ====================================================== */
 
-app.get(
-  "/dashboard",
-  requireLogin,
-  (req, res) => {
+app.get('/dashboard', requireLogin, async (req, res) => {
+  try {
+    const batchRes = await axios.get(`${BACKEND}/batches`, {
+      headers: { username: req.session.user }
+    });
+    const batches = batchRes.data || [];
 
-    res.render("dashboard", {
+    const fuelingRes = await axios.get(`${BACKEND}/fueling-list`, {
+      headers: { username: req.session.user }
+    });
+    const fuelings = fuelingRes.data || [];
 
+    const totalProduksi = batches.filter(b => b.production).reduce((s, b) => s + (b.production.Vf || 0), 0);
+    const totalShipping = batches.filter(b => b.shipping).reduce((s, b) => s + (b.shipping.Vship_out || 0), 0);
+    const totalFueling  = fuelings.reduce((s, f) => s + (f.Vfuel || 0), 0);
+    const totalVnTerminal = batches.filter(b => b.terminal).reduce((s, b) => s + (b.terminal.Vn_term_in || 0), 0);
+    const totalVnFueling  = fuelings.reduce((s, f) => s + (f.Vn_fuel || 0), 0);
+    const currentStock    = totalVnTerminal - totalVnFueling;
+    const emissionReduction = (((89 - 13.9) / 89) * 100).toFixed(1);
+
+    const totalNeatSAF = batches.filter(b => b.production).reduce((s, b) => s + (b.production.Vn || 0), 0);
+    const totalAvtur   = batches.filter(b => b.production).reduce((s, b) => s + (b.production.Vi || 0), 0);
+
+    // Loss per stage
+    const lossLoading  = batches.filter(b => b.loading).reduce((s, b) => s + (b.loading.Lload || 0), 0);
+    const lossShipping = batches.filter(b => b.shipping).reduce((s, b) => s + (b.shipping.Lship || 0), 0);
+    const lossTerminal = batches.filter(b => b.terminal).reduce((s, b) => s + (b.terminal.Lterm || 0), 0);
+    const totalLoss    = lossLoading + lossShipping + lossTerminal;
+
+    // Gain (selisih positif kalau ada)
+    const totalGain = 0; // bisa dihitung dari data jika ada
+
+    const validBatch        = batches.filter(b => b.terminal).length;
+    const warningBatch      = batches.filter(b => b.production && !b.loading).length;
+    const readyTraceability = fuelings.length;
+    const totalBatches      = batches.length;
+
+    const newestBatches = [...batches]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 10);
+
+    res.render('dashboard', {
       role: req.session.role,
-      user: req.session.user
-
+      user: req.session.user,
+      stats: { totalProduksi, totalShipping, totalFueling, currentStock, emissionReduction },
+      overview: { totalNeatSAF, totalAvtur, totalLoss, lossLoading, lossShipping, lossTerminal, totalGain },
+      dataStatus: {
+        validBatch,
+        validPct:   totalBatches ? ((validBatch / totalBatches) * 100).toFixed(0) : 0,
+        warningBatch,
+        warningPct: totalBatches ? ((warningBatch / totalBatches) * 100).toFixed(0) : 0,
+        readyTraceability,
+        readyPct:   totalBatches ? ((readyTraceability / totalBatches) * 100).toFixed(0) : 0
+      },
+      newestBatches
     });
 
+  } catch (err) {
+    console.error('Dashboard error:', err.message);
+    res.render('dashboard', {
+      role: req.session.role,
+      user: req.session.user,
+      stats: { totalProduksi: 0, totalShipping: 0, totalFueling: 0, currentStock: 0, emissionReduction: '84.4' },
+      overview: { totalNeatSAF: 0, totalAvtur: 0, totalLoss: 0, lossLoading: 0, lossShipping: 0, lossTerminal: 0, totalGain: 0 },
+      dataStatus: { validBatch: 0, validPct: 0, warningBatch: 0, warningPct: 0, readyTraceability: 0, readyPct: 0 },
+      newestBatches: []
+    });
   }
-);
+});
 
 /* ======================================================
 ============== DASHBOARD DETAIL =========================
@@ -446,19 +502,25 @@ app.post('/terminal-detail', requireLogin, async (req, res) => {
 ========== AVIATION FUEL BUSINESS =======================
 ====================================================== */
 
-app.get(
-  "/fueling",
-  requireLogin,
-  (req, res) => {
-
-    res.render("fueling", {
-
-      role: req.session.role
-
+app.get('/fueling', requireLogin, async (req, res) => {
+  try {
+    const response = await axios.get(`${BACKEND}/batches`, {
+      headers: { username: req.session.user }
     });
-
+    res.render('fueling', {
+      role: req.session.role,
+      user: req.session.user,
+      batches: response.data
+    });
+  } catch (err) {
+    console.error('Fueling fetch error:', err.message);
+    res.render('fueling', {
+      role: req.session.role,
+      user: req.session.user,
+      batches: []
+    });
   }
-);
+});
 
 app.get(
   "/fueling-detail",

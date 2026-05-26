@@ -102,7 +102,25 @@
 
 <script>
 function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("expanded");
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+function toggleProfile() {
+  document.getElementById("profileDropdown").style.display =
+    document.getElementById("profileDropdown").style.display === "block" ? "none" : "block";
+}
+function toggleNotif() {
+  document.getElementById("notifDropdown").style.display =
+    document.getElementById("notifDropdown").style.display === "block" ? "none" : "block";
+}
+window.onclick = function(e) {
+  if (!e.target.closest(".profile-wrapper")) {
+    const p = document.getElementById("profileDropdown");
+    if (p) p.style.display = "none";
+  }
+  if (!e.target.closest(".notif-wrapper")) {
+    const n = document.getElementById("notifDropdown");
+    if (n) n.style.display = "none";
+  }
 }
 </script>
 

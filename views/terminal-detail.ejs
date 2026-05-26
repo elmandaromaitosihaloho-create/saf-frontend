@@ -28,8 +28,27 @@
     <div class="topbar">
       <div class="menu-btn" onclick="toggleSidebar()">☰</div>
       <div class="top-right">
-        <img src="/images/notif.png">
-        <img src="/images/admin.png">
+        <div class="notif-wrapper" style="position:relative;">
+          <img src="/images/notif.png" class="top-icon" onclick="toggleNotif()" style="width:24px;height:24px;cursor:pointer;opacity:0.6;">
+          <div id="notifDropdown" style="display:none;position:absolute;right:0;top:40px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;z-index:999;padding:16px;">
+            <p style="font-size:13px;color:#888;">Tidak ada notifikasi baru</p>
+          </div>
+        </div>
+        <div class="profile-wrapper" style="position:relative;">
+          <div onclick="toggleProfile()" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <img src="/images/admin.png" style="width:24px;height:24px;opacity:0.6;">
+            <span style="font-size:14px;font-weight:600;color:#333;"><%= user || 'User' %></span>
+          </div>
+          <div id="profileDropdown" style="display:none;position:absolute;right:0;top:40px;background:white;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;z-index:999;padding:16px;">
+            <div style="text-align:center;padding-bottom:12px;border-bottom:1px solid #eee;margin-bottom:8px;">
+              <img src="/images/profile.png" style="width:48px;border-radius:50%;margin-bottom:6px;">
+              <h3 style="font-size:14px;"><%= user || 'User' %></h3>
+              <p style="font-size:12px;color:#888;"><%= role || '-' %></p>
+            </div>
+            <a href="/profile" style="display:block;padding:10px 12px;color:#333;text-decoration:none;font-size:13px;border-radius:8px;">👤 View Profile</a>
+            <a href="/logout" style="display:block;padding:10px 12px;color:#e53935;text-decoration:none;font-size:13px;border-radius:8px;">🚪 Logout</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -146,7 +165,7 @@
 
 <script>
 function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("expanded");
+  document.getElementById("sidebar").classList.toggle("collapsed");
 }
 </script>
 </body>

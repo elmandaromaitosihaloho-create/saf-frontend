@@ -5,50 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shipping Detail</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-    body{ background:#f4f6fb; }
-    .container{ display:flex; min-height:100vh; }
-    .sidebar{ width:260px; background:#5b73c8; color:white; transition:0.3s; overflow:hidden; flex-shrink:0; }
-    .sidebar.collapsed{ width:90px; }
-    .sidebar-header{ display:flex; align-items:flex-start; gap:14px; padding:26px 22px; }
-    .logo{ width:42px; flex-shrink:0; margin-top:3px; }
-    .app-title{ font-size:14px; font-weight:700; line-height:1.35; }
-    .sidebar.collapsed .app-title{ display:none; }
-    .sidebar ul{ list-style:none; margin-top:18px; }
-    .sidebar ul li{ margin-bottom:4px; }
-    .menu-link{ display:flex; align-items:center; gap:16px; padding:17px 24px; color:white; text-decoration:none; transition:0.3s; font-size:14px; font-weight:600; }
-    .menu-link:hover{ background:#4059b5; }
-    .sidebar ul li.active .menu-link{ background:#233f99; }
-    .menu-link img{ width:20px; flex-shrink:0; }
-    .sidebar.collapsed .menu-link span{ display:none; }
-    .main{ flex:1; display:flex; flex-direction:column; }
-    .topbar{ height:92px; background:white; display:flex; align-items:center; justify-content:space-between; padding:0 35px; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
-    .menu-btn{ font-size:42px; cursor:pointer; color:#1e2b50; user-select:none; }
-    .top-right{ display:flex; align-items:center; gap:22px; }
-    .top-right img{ width:24px; cursor:pointer; }
-    .content{ padding:40px; }
-    .card{ background:white; border-radius:28px; padding:40px; box-shadow:0 4px 20px rgba(0,0,0,0.05); margin-bottom:24px; }
-    .title{ font-size:28px; font-weight:700; color:#1d2b53; margin-bottom:30px; }
-    .batch-box{ background:#dfe9ff; border-radius:18px; padding:24px; margin-bottom:35px; display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
-    .batch-item p{ font-size:13px; color:#5b6b92; margin-bottom:8px; }
-    .batch-item h4{ font-size:16px; color:#1e2b50; line-height:1.4; }
-    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px 32px; }
-    .form-group{ display:flex; flex-direction:column; }
-    .form-group label{ margin-bottom:10px; font-size:15px; font-weight:600; color:#1e2b50; }
-    .required{ color:red; }
-    .form-group input, .form-group select{ height:58px; border:1px solid #d7ddea; border-radius:12px; padding:0 18px; font-size:16px; background:white; outline:none; transition:0.3s; }
-    .form-group input:focus, .form-group select:focus{ border-color:#5b73c8; box-shadow:0 0 0 4px rgba(91,115,200,0.15); }
-    .readonly{ background:#e8e8e8 !important; color:#666; }
-    .alert-valid{ background:#d4edda; color:#155724; padding:14px 20px; border-radius:10px; margin-top:24px; font-weight:600; }
-    .alert-invalid{ background:#f8d7da; color:#721c24; padding:14px 20px; border-radius:10px; margin-top:24px; font-weight:600; }
-    .button-group{ margin-top:35px; display:flex; justify-content:flex-end; gap:15px; }
-    .btn{ height:52px; padding:0 30px; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; transition:0.3s; }
-    .cancel{ background:#e5e7eb; color:#444; }
-    .cancel:hover{ background:#d6d8dd; }
-    .save{ background:#17338f; color:white; }
-    .save:hover{ background:#10266d; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 
 <body>
@@ -275,6 +233,24 @@
 <script>
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
+}
+function toggleProfile() {
+  document.getElementById("profileDropdown").style.display =
+    document.getElementById("profileDropdown").style.display === "block" ? "none" : "block";
+}
+function toggleNotif() {
+  document.getElementById("notifDropdown").style.display =
+    document.getElementById("notifDropdown").style.display === "block" ? "none" : "block";
+}
+window.onclick = function(e) {
+  if (!e.target.closest(".profile-wrapper")) {
+    const p = document.getElementById("profileDropdown");
+    if (p) p.style.display = "none";
+  }
+  if (!e.target.closest(".notif-wrapper")) {
+    const n = document.getElementById("notifDropdown");
+    if (n) n.style.display = "none";
+  }
 }
 
 // Data dari backend
